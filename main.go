@@ -55,10 +55,10 @@ func (site *Site) RenderHeader() dom.Element {
 
 func (site *Site) RenderSearch() dom.Element {
 	esearch := site.Doc.CreateElement("form")
-	esearch.Class().Add("header")
+	esearch.Class().Add("search")
 
 	einput := site.Doc.CreateElement("input")
-	einput.Class().Add("search")
+	einput.Class().Add("search-input")
 	einput.SetAttribute("type", "search")
 	esearch.AppendChild(einput)
 
@@ -91,18 +91,13 @@ func (site *Site) RenderPage(page *Page, selected bool) dom.Element {
 	{
 		eedit := site.Doc.CreateElement("div")
 		eedit.Class().Add("icon")
-		eedit.SetInnerHTML("E")
+		eedit.SetInnerHTML("Edit")
 		estatus.AppendChild(eedit)
 
 		eurl := site.Doc.CreateElement("div")
 		eurl.Class().Add("url")
 		eurl.SetInnerHTML(page.URL)
 		estatus.AppendChild(eurl)
-
-		eclose := site.Doc.CreateElement("div")
-		eclose.Class().Add("icon")
-		eclose.SetInnerHTML("X")
-		estatus.AppendChild(eclose)
 	}
 	epage := site.Doc.CreateElement("div")
 	epage.Class().Add("page")

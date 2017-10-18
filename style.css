@@ -27,9 +27,8 @@ body {
 	--main-margin: 0.5rem;
 	--main-padding: 0.5rem;
 
-	--hover-color: #d4f3b3;
-	--selection-color: rgba(255, 255, 0, 0.5);
-
+	--selection-color: #9dd464;
+	
 	--animation-speed: 0.15s;
 }
 
@@ -58,11 +57,15 @@ body {
 }
 
 .search {
-
+	
 }
 
 .search-input {
 	width: 30em;
+}
+
+.search > button {
+	font-variant: small-caps;
 }
 
 .pages {
@@ -88,6 +91,7 @@ body {
 
 	padding: calc(0.5 * var(--main-padding));
 	margin: calc(0.5 * var(--main-padding));
+	padding-top: 2px;
 
 	width: 25em;
 	max-width: 100%;
@@ -96,9 +100,11 @@ body {
 	background: #fff;
 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
 	border-radius: 2px;
+
+	border-top: 4px solid transparent;
 }
 .stage.selected {
-	outline: 2px solid var(--selection-color);
+	border-top: 4px solid var(--selection-color);
 }
 
 .stage > .status {
@@ -116,22 +122,27 @@ body {
 .status > .icon {
 	display: block;
 	height: var(--tool-height);
-	width: var(--tool-height);
-
-	margin: 0 2px;
+	
+	margin: 0 6px;
+	padding: 0 6px;
 
 	text-align: center;
 
 	background: #fff;
 	transition: background var(--animation-speed) ease-in-out;
-	font-size: 0.8em;
+	
+	border: 1px solid #ddd;
+	border-bottom: 0;
 
 	border-radius: 2px 2px 0 0;
 	cursor: pointer;
 }
+.status > .icon:first-child {
+	margin-left: 0;
+}
 
 .status > .icon:hover {
-	background: var(--hover-color);
+	background: #eee;
 }
 
 .page {
