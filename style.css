@@ -22,10 +22,15 @@ body {
 }
 
 :root {
-	--header-height: 2em;
-	--tool-height: 1em;
-	--main-margin: 0.5em;
-	--main-padding: 0.5em;
+	--header-height: 2rem;
+	--tool-height: 1.2rem;
+	--main-margin: 0.5rem;
+	--main-padding: 0.5rem;
+
+	--hover-color: #d4f3b3;
+	--selection-color: rgba(255, 255, 0, 0.5);
+
+	--animation-speed: 0.15s;
 }
 
 body {
@@ -80,48 +85,69 @@ body {
 	position: relative;
 	flex: 0 0 auto;
 	display: block;
-	xcontain: strict;
 
-	margin: var(--main-margin);
+	padding: calc(0.5 * var(--main-padding));
+	margin: calc(0.5 * var(--main-padding));
+
 	width: 25em;
 	max-width: 100%;
-	height: calc(100% - var(--main-margin));
+	height: calc(100% - var(--main-padding));
+
+	background: #fff;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+	border-radius: 2px;
+}
+.stage.selected {
+	outline: 2px solid var(--selection-color);
 }
 
 .stage > .status {
+	display: flex;
 	height: var(--tool-height);
 	line-height: var(--tool-height);
+	font-size: calc(0.6 * var(--tool-height));
 }
 
 .status > .url {
-	font-size: 0.8em;
+	flex: 1;
 	color: #333;
-	text-shadow:
-		-1px -1px 0 #fff,  
-		+1px -1px 0 #fff,
-		-1px +1px 0 #fff,
-		+1px +1px 0 #fff;
+}
+
+.status > .icon {
+	display: block;
+	height: var(--tool-height);
+	width: var(--tool-height);
+
+	margin: 0 2px;
+
+	text-align: center;
+
+	background: #fff;
+	transition: background var(--animation-speed) ease-in-out;
+	font-size: 0.8em;
+
+	border-radius: 2px 2px 0 0;
+	cursor: pointer;
+}
+
+.status > .icon:hover {
+	background: var(--hover-color);
 }
 
 .page {
+	border-top: 1px solid #ddd;
 	padding: var(--main-padding);
-	height: calc(100% - var(--main-padding) - var(--tool-height));
+	height: calc(100% - var(--tool-height));
 
 	overflow-x: hidden;
-	overflow-y: scroll;
-
-	background: #fff;
-	box-shadow: 0 2px 3px #889;
-	border-radius: 2px;
+	overflow-y: auto;
 }
 
 .page > .title {
 	margin-top: 0.5em;
-	margin-bottom: 0.5em;
-
 	font-size: 1.8em;
 }
 
 .page > .story {
-	margin-top: 0.5em;
+	contain: paint;
 }

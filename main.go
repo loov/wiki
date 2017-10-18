@@ -71,25 +71,39 @@ func (site *Site) RenderSearch() dom.Element {
 func (site *Site) RenderPages(pages []*Page) dom.Element {
 	epages := site.Doc.CreateElement("div")
 	epages.Class().Add("pages")
-	for _, page := range pages {
-		epages.AppendChild(site.RenderPage(page))
+	for i, page := range pages {
+		epages.AppendChild(site.RenderPage(page, i == 0))
 	}
 	return epages
 }
 
-func (site *Site) RenderPage(page *Page) dom.Element {
+func (site *Site) RenderPage(page *Page, selected bool) dom.Element {
 	estage := site.Doc.CreateElement("div")
 	estage.Class().Add("stage")
+	if selected {
+		estage.Class().Add("selected")
+	}
 
 	estatus := site.Doc.CreateElement("div")
 	estatus.Class().Add("status")
 	estage.AppendChild(estatus)
 
-	eurl := site.Doc.CreateElement("div")
-	eurl.Class().Add("url")
-	eurl.SetInnerHTML(page.URL)
-	estatus.AppendChild(eurl)
+	{
+		eedit := site.Doc.CreateElement("div")
+		eedit.Class().Add("icon")
+		eedit.SetInnerHTML("E")
+		estatus.AppendChild(eedit)
 
+		eurl := site.Doc.CreateElement("div")
+		eurl.Class().Add("url")
+		eurl.SetInnerHTML(page.URL)
+		estatus.AppendChild(eurl)
+
+		eclose := site.Doc.CreateElement("div")
+		eclose.Class().Add("icon")
+		eclose.SetInnerHTML("X")
+		estatus.AppendChild(eclose)
+	}
 	epage := site.Doc.CreateElement("div")
 	epage.Class().Add("page")
 	estage.AppendChild(epage)
