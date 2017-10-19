@@ -162,3 +162,15 @@ body {
 .page > .story {
 	contain: paint;
 }
+
+.overflow-bottom {
+	background: linear-gradient(0deg, #ccc, transparent 10px);
+}
+.overflow-top {
+	background: linear-gradient(180deg, #ccc, transparent 10px);
+}
+.overflow-bottom.overflow-top {
+	background:
+		linear-gradient(0deg, #ccc, transparent 10px),	
+		linear-gradient(180deg, #ccc, transparent 10px);
+}

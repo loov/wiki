@@ -101,6 +101,7 @@ func (site *Site) RenderPage(page *Page, selected bool) dom.Element {
 	}
 	epage := site.Doc.CreateElement("div")
 	epage.Class().Add("page")
+	AttachOverflowIndicator(epage)
 	estage.AppendChild(epage)
 
 	etitle := site.Doc.CreateElement("div")
