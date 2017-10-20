@@ -6,6 +6,6 @@ import (
 
 func main() {
 	site := NewSite()
-	site.Stages.Open("Welcome", "welcome")
+	site.Lineup.Open("Welcome", "welcome")
 	dom.GetWindow().Document().DocumentElement().AppendChild(site.Node)
 }

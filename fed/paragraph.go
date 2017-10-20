@@ -1,4 +1,4 @@
-package main
+package fed
 
 type Paragraph struct {
 	Text string

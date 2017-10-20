@@ -1,14 +1,14 @@
-package main
+package fed
 
 import (
 	"fmt"
 
 	"honnef.co/go/js/dom"
+
+	"github.com/loov/wiki/h"
 )
 
 type Stage struct {
-	Stages *Stages
-
 	Node dom.Element
 
 	Title   string
@@ -20,27 +20,26 @@ type Stage struct {
 	Page     *Page
 }
 
-func NewStage(stages *Stages, title, url string) *Stage {
+func NewStage(title, url string) *Stage {
 	stage := &Stage{}
-	stage.Stages = stages
 	stage.Title = title
 	stage.URL = url
 	stage.Loading = true
 
-	stage.PageNode = h("div", "page")
-	AttachOverflowIndicator(stage.PageNode)
+	stage.PageNode = h.Tag("div", "page")
+	h.AttachOverflowIndicator(stage.PageNode)
 
-	stage.Node = h("div", "stage",
-		h("div", "indicator"),
-		h("div", "status",
-			h("div", "icon", text("Edit")),
-			h("div", "url", text(stage.URL)),
+	stage.Node = h.Tag("div", "stage",
+		h.Tag("div", "indicator"),
+		h.Tag("div", "status",
+			h.Tag("div", "icon", h.Text("Edit")),
+			h.Tag("div", "url", h.Text(stage.URL)),
 		),
 		stage.PageNode,
 	)
-	stage.Node.Class().Add("selected")
-
 	stage.Update()
+
+	// simulate fetch
 	dom.GetWindow().SetTimeout(func() {
 		stage.Loading = false
 		stage.Page = &Welcome
@@ -54,14 +53,14 @@ func (stage *Stage) Update() {
 	stage.PageNode.SetInnerHTML("")
 	if stage.Page == nil || stage.Loading {
 		stage.Node.Class().Add("loading")
-		stage.PageNode.AppendChild(frag(
-			h("div", "title", text(stage.Title)),
+		stage.PageNode.AppendChild(h.Fragment(
+			h.Tag("div", "title", h.Text(stage.Title)),
 		))
 	} else {
 		stage.Node.Class().Remove("loading")
-		stage.PageNode.AppendChild(frag(
-			h("div", "title", text(stage.Page.Title)),
-			h("div", "story", stage.RenderAll(stage.Page.Story...)...),
+		stage.PageNode.AppendChild(h.Fragment(
+			h.Tag("div", "title", h.Text(stage.Page.Title)),
+			h.Tag("div", "story", stage.RenderAll(stage.Page.Story...)...),
 		))
 	}
 }
@@ -75,20 +74,20 @@ func (stage *Stage) RenderAll(items ...Item) []dom.Node {
 }
 
 func (stage *Stage) Render(item Item) dom.Element {
-	el := h("div", "item")
+	el := h.Tag("div", "item")
 
 	switch item := item.(type) {
 	case *Paragraph:
 		el.Class().Add("paragraph")
-		p := h("p", "")
+		p := h.Tag("p", "")
 		(&Parser{
-			Begin: func() { p = h("p", "") },
+			Begin: func() { p = h.Tag("p", "") },
 			End:   func() { el.AppendChild(p); p = nil },
 			Text: func(s string) {
-				p.AppendChild(text(s))
+				p.AppendChild(h.Text(s))
 			},
 			Link: func(spec string) {
-				link := h("a", "")
+				link := h.Tag("a", "")
 				link.SetAttribute("href", spec)
 				link.SetTextContent(spec)
 				p.AppendChild(link)

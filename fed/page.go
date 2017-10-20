@@ -1,8 +1,4 @@
-package main
-
-type Wiki struct {
-	Pages []*Page
-}
+package fed
 
 type Page struct {
 	URL   string
