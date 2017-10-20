@@ -1,15 +1,14 @@
-package main
+package client
 
 import (
 	"honnef.co/go/js/dom"
 
-	"github.com/loov/wiki/fed"
 	"github.com/loov/wiki/h"
 )
 
 type Lineup struct {
 	Node dom.Element
-	List []*fed.Stage
+	List []*Stage
 }
 
 func NewLineup() *Lineup {
@@ -19,6 +18,6 @@ func NewLineup() *Lineup {
 }
 
 func (lineup *Lineup) Open(title, url string) {
-	stage := fed.NewStage(title, url)
+	stage := NewStage(title, url)
 	lineup.Node.AppendChild(stage.Node)
 }

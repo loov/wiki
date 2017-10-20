@@ -1,18 +1,18 @@
-package main
+package client
 
 import (
 	"github.com/loov/wiki/h"
 	"honnef.co/go/js/dom"
 )
 
-type Site struct {
+type Client struct {
 	Node   dom.Element
 	Search *Search
 	Lineup *Lineup
 }
 
-func NewSite() *Site {
-	site := &Site{}
+func New() *Client {
+	site := &Client{}
 	site.Search = NewSearch()
 	site.Lineup = NewLineup()
 	site.Node = h.Div("app",

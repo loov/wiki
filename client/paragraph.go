@@ -1,4 +1,4 @@
-package fed
+package client
 
 type Paragraph struct {
 	Text string

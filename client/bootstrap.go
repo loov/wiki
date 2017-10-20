@@ -1,4 +1,4 @@
-package fed
+package client
 
 var Welcome = Page{
 	URL:   "http://localhost:8000/welcome",

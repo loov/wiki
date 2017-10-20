@@ -1,4 +1,4 @@
-package fed
+package client
 
 type Server struct{}
 

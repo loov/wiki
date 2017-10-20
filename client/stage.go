@@ -1,4 +1,4 @@
-package fed
+package client
 
 import (
 	"fmt"
@@ -12,6 +12,7 @@ type Stage struct {
 	Node dom.Element
 
 	Title   string
+	Context string
 	URL     string
 	Loading bool
 	Editing bool
@@ -32,8 +33,8 @@ func NewStage(title, url string) *Stage {
 	stage.Node = h.Div("stage",
 		h.Div("indicator"),
 		h.Div("status",
+			h.Div("url", h.Text("[loov.io] "+stage.URL)),
 			h.Div("icon", h.Text("Edit")),
-			h.Div("url", h.Text(stage.URL)),
 		),
 		stage.PageNode,
 	)
