@@ -13,8 +13,7 @@ func main() {
 	)
 
 	site := &Site{}
-	site.Doc = dom.GetWindow().Document()
-	site.Node = site.Doc.GetElementByID("app")
+	site.Node = dom.GetWindow().Document().GetElementByID("app")
 	site.Init()
 
 	site.Wiki = wiki

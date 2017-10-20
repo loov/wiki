@@ -7,45 +7,34 @@ import (
 )
 
 type Site struct {
-	Doc       dom.Document
 	Node      dom.Element
 	StageList dom.Element
 
-	Wiki   *Wiki
-	Stages []*Stage
-}
-
-type Stage struct {
-	Node dom.Element
-	Page *Page
+	Wiki *Wiki
 }
 
 func (site *Site) Init() {
 	site.Node.SetInnerHTML("")
 	site.Node.AppendChild(site.RenderHeader())
 
-	site.StageList = site.Doc.CreateElement("div")
-	site.StageList.Class().Add("stages")
+	site.StageList = h("div", "stages")
 	site.Node.AppendChild(site.StageList)
 }
 
 func (site *Site) RenderHeader() dom.Element {
-	eheader := site.Doc.CreateElement("div")
-	eheader.Class().Add("header")
+	eheader := h("div", "header")
 	eheader.AppendChild(site.RenderSearch())
 	return eheader
 }
 
 func (site *Site) RenderSearch() dom.Element {
-	esearch := site.Doc.CreateElement("form")
-	esearch.Class().Add("search")
+	esearch := h("form", "search")
 
-	einput := site.Doc.CreateElement("input")
-	einput.Class().Add("search-input")
+	einput := h("input", "search-input")
 	einput.SetAttribute("type", "search")
 	esearch.AppendChild(einput)
 
-	ebutton := site.Doc.CreateElement("button")
+	ebutton := h("button", "")
 	ebutton.SetInnerHTML("Search")
 	esearch.AppendChild(ebutton)
 
@@ -59,39 +48,32 @@ func (site *Site) UpdateStages() {
 }
 
 func (site *Site) RenderPage(page *Page, selected bool) dom.Element {
-	estage := site.Doc.CreateElement("div")
-	estage.Class().Add("stage")
+	estage := h("div", "stage")
 	if selected {
 		estage.Class().Add("selected")
 	}
 
-	estatus := site.Doc.CreateElement("div")
-	estatus.Class().Add("status")
+	estatus := h("div", "status")
 	estage.AppendChild(estatus)
 
 	{
-		eedit := site.Doc.CreateElement("div")
-		eedit.Class().Add("icon")
+		eedit := h("div", "icon")
 		eedit.SetInnerHTML("Edit")
 		estatus.AppendChild(eedit)
 
-		eurl := site.Doc.CreateElement("div")
-		eurl.Class().Add("url")
+		eurl := h("div", "url")
 		eurl.SetInnerHTML(page.URL)
 		estatus.AppendChild(eurl)
 	}
-	epage := site.Doc.CreateElement("div")
-	epage.Class().Add("page")
+	epage := h("div", "page")
 	AttachOverflowIndicator(epage)
 	estage.AppendChild(epage)
 
-	etitle := site.Doc.CreateElement("div")
-	etitle.Class().Add("title")
+	etitle := h("div", "title")
 	etitle.SetInnerHTML(page.Title)
 	epage.AppendChild(etitle)
 
-	estory := site.Doc.CreateElement("div")
-	estory.Class().Add("story")
+	estory := h("div", "story")
 	for _, item := range page.Story {
 		estory.AppendChild(site.RenderItem(item))
 	}
@@ -101,21 +83,20 @@ func (site *Site) RenderPage(page *Page, selected bool) dom.Element {
 }
 
 func (site *Site) RenderItem(item Item) dom.Element {
-	itemel := site.Doc.CreateElement("div")
-	itemel.Class().Add("item")
+	itemel := h("div", "item")
 
 	switch item := item.(type) {
 	case *Paragraph:
 		itemel.Class().Add("paragraph")
-		p := site.Doc.CreateElement("p")
+		p := h("p", "")
 		(&Parser{
-			Begin: func() { p = site.Doc.CreateElement("p") },
+			Begin: func() { p = h("p", "") },
 			End:   func() { itemel.AppendChild(p); p = nil },
 			Text: func(s string) {
-				p.AppendChild(site.Doc.CreateTextNode(s))
+				p.AppendChild(text(s))
 			},
 			Link: func(spec string) {
-				link := site.Doc.CreateElement("a")
+				link := h("a", "")
 				link.SetAttribute("href", spec)
 				link.SetTextContent(spec)
 				p.AppendChild(link)
