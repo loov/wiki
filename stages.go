@@ -7,12 +7,13 @@ type Stages struct {
 	List []*Stage
 }
 
-func NewStages(parent dom.Element) *Stages {
+func NewStages() *Stages {
 	stages := &Stages{}
 	stages.Node = h("div", "stages")
 	return stages
 }
 
 func (stages *Stages) Open(title, url string) {
-
+	stage := NewStage(url)
+	stages.Node.AppendChild(stage.Node)
 }

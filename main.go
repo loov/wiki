@@ -5,17 +5,7 @@ import (
 )
 
 func main() {
-	wiki := &Wiki{}
-	wiki.Pages = append(
-		wiki.Pages,
-		&Welcome,
-		&Second,
-	)
-
-	site := &Site{}
-	site.Node = dom.GetWindow().Document().GetElementByID("app")
-	site.Init()
-
-	site.Wiki = wiki
-	site.UpdateStages()
+	site := NewSite()
+	site.Stages.Open("Welcome", "welcome")
+	dom.GetWindow().Document().DocumentElement().AppendChild(site.Node)
 }

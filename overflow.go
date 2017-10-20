@@ -29,13 +29,12 @@ func AttachOverflowIndicator(elem dom.Element) {
 		}
 	}
 
-	request := func(_ dom.Event) {
+	requestFrame := func(_ dom.Event) {
 		win := dom.GetWindow()
 		win.CancelAnimationFrame(token)
 		token = dom.GetWindow().RequestAnimationFrame(update)
 	}
 
-	elem.AddEventListener("scroll", false, request)
-
-	request(nil)
+	elem.AddEventListener("scroll", false, requestFrame)
+	requestFrame(nil)
 }
