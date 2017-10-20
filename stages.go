@@ -14,6 +14,6 @@ func NewStages() *Stages {
 }
 
 func (stages *Stages) Open(title, url string) {
-	stage := NewStage(url)
+	stage := NewStage(stages, title, url)
 	stages.Node.AppendChild(stage.Node)
 }

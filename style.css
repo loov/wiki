@@ -1,3 +1,19 @@
+:root {
+	--header-height: 2rem;
+	--tool-height: 1.2rem;
+	--indicator-height: 4px;
+	--main-margin: 0.5rem;
+	--main-padding: 0.5rem;
+
+	--selection-color: #9dd464;
+	
+	--animation-speed: 0.15s;
+}
+
+* {
+	box-sizing: border-box;
+}
+
 html, body {
 	margin: 0;
 	padding: 0;
@@ -16,25 +32,6 @@ html, body {
 body {
 	overflow-scrolling: touch;
 	-webkit-overflow-scrolling: touch;
-}
-
-* {
-	box-sizing: border-box;
-}
-
-:root {
-	--header-height: 2rem;
-	--tool-height: 1.2rem;
-	--main-margin: 0.5rem;
-	--main-padding: 0.5rem;
-
-	--selection-color: #9dd464;
-	
-	--animation-speed: 0.15s;
-}
-
-body {
-
 }
 
 .wiki {
@@ -101,11 +98,22 @@ body {
 	background: #fff;
 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
 	border-radius: 2px;
-
-	border-top: 4px solid transparent;
 }
-.stage.selected {
-	border-top: 4px solid var(--selection-color);
+
+.stage > .indicator {
+	position: relative;
+	height: var(--indicator-height);
+	border-radius: 3px;
+	margin-bottom: 2px;
+	transition: background 0.4s ease-in-out;
+	background: transparent;
+}
+.stage.selected > .indicator {
+	overflow: hidden;
+	background: var(--selection-color);
+}
+.stage.loading > .indicator {
+	background: #e49300;
 }
 
 .stage > .status {
@@ -149,7 +157,7 @@ body {
 .page {
 	border-top: 1px solid #ddd;
 	padding: var(--main-padding);
-	height: calc(100% - var(--tool-height));
+	height: calc(100% - var(--tool-height) - var(--indicator-height));
 
 	overflow-x: hidden;
 	overflow-y: auto;
