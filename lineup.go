@@ -14,7 +14,7 @@ type Lineup struct {
 
 func NewLineup() *Lineup {
 	lineup := &Lineup{}
-	lineup.Node = h.Tag("div", "lineup")
+	lineup.Node = h.Div("lineup")
 	return lineup
 }
 

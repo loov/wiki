@@ -26,14 +26,14 @@ func NewStage(title, url string) *Stage {
 	stage.URL = url
 	stage.Loading = true
 
-	stage.PageNode = h.Tag("div", "page")
+	stage.PageNode = h.Div("page")
 	h.AttachOverflowIndicator(stage.PageNode)
 
-	stage.Node = h.Tag("div", "stage",
-		h.Tag("div", "indicator"),
-		h.Tag("div", "status",
-			h.Tag("div", "icon", h.Text("Edit")),
-			h.Tag("div", "url", h.Text(stage.URL)),
+	stage.Node = h.Div("stage",
+		h.Div("indicator"),
+		h.Div("status",
+			h.Div("icon", h.Text("Edit")),
+			h.Div("url", h.Text(stage.URL)),
 		),
 		stage.PageNode,
 	)
@@ -54,13 +54,13 @@ func (stage *Stage) Update() {
 	if stage.Page == nil || stage.Loading {
 		stage.Node.Class().Add("loading")
 		stage.PageNode.AppendChild(h.Fragment(
-			h.Tag("div", "title", h.Text(stage.Title)),
+			h.Div("title", h.Text(stage.Title)),
 		))
 	} else {
 		stage.Node.Class().Remove("loading")
 		stage.PageNode.AppendChild(h.Fragment(
-			h.Tag("div", "title", h.Text(stage.Page.Title)),
-			h.Tag("div", "story", stage.RenderAll(stage.Page.Story...)...),
+			h.Div("title", h.Text(stage.Page.Title)),
+			h.Div("story", stage.RenderAll(stage.Page.Story...)...),
 		))
 	}
 }
@@ -74,22 +74,20 @@ func (stage *Stage) RenderAll(items ...Item) []dom.Node {
 }
 
 func (stage *Stage) Render(item Item) dom.Element {
-	el := h.Tag("div", "item")
+	el := h.Div("item")
 
 	switch item := item.(type) {
 	case *Paragraph:
 		el.Class().Add("paragraph")
-		p := h.Tag("p", "")
+		p := h.P()
 		(&Parser{
-			Begin: func() { p = h.Tag("p", "") },
+			Begin: func() { p = h.P() },
 			End:   func() { el.AppendChild(p); p = nil },
 			Text: func(s string) {
 				p.AppendChild(h.Text(s))
 			},
 			Link: func(spec string) {
-				link := h.Tag("a", "")
-				link.SetAttribute("href", spec)
-				link.SetTextContent(spec)
+				link := h.A("", spec, h.Text(spec))
 				p.AppendChild(link)
 			},
 		}).Run(item.Text)
