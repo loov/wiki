@@ -7,8 +7,9 @@ import (
 )
 
 type Site struct {
-	Doc  dom.Document
-	Node dom.Element
+	Doc       dom.Document
+	Node      dom.Element
+	StageList dom.Element
 
 	Wiki   *Wiki
 	Stages []*Stage
@@ -19,16 +20,13 @@ type Stage struct {
 	Page *Page
 }
 
-func (site *Site) Bind() {
+func (site *Site) Init() {
 	site.Node.SetInnerHTML("")
-	site.Node.AppendChild(site.Render())
-}
+	site.Node.AppendChild(site.RenderHeader())
 
-func (site *Site) Render() dom.DocumentFragment {
-	fragment := site.Doc.CreateDocumentFragment()
-	fragment.AppendChild(site.RenderHeader())
-	fragment.AppendChild(site.RenderPages(site.Wiki.Pages))
-	return fragment
+	site.StageList = site.Doc.CreateElement("div")
+	site.StageList.Class().Add("stages")
+	site.Node.AppendChild(site.StageList)
 }
 
 func (site *Site) RenderHeader() dom.Element {
@@ -53,13 +51,11 @@ func (site *Site) RenderSearch() dom.Element {
 
 	return esearch
 }
-func (site *Site) RenderPages(pages []*Page) dom.Element {
-	epages := site.Doc.CreateElement("div")
-	epages.Class().Add("pages")
-	for i, page := range pages {
-		epages.AppendChild(site.RenderPage(page, i == 0))
+func (site *Site) UpdateStages() {
+	site.StageList.SetInnerHTML("")
+	for i, page := range site.Wiki.Pages {
+		site.StageList.AppendChild(site.RenderPage(page, i == 0))
 	}
-	return epages
 }
 
 func (site *Site) RenderPage(page *Page, selected bool) dom.Element {

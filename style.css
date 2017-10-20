@@ -68,7 +68,7 @@ body {
 	font-variant: small-caps;
 }
 
-.pages {
+.stages {
 	position: absolute;
 	display: flex;
 	flex-flow: row;

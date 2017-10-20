@@ -14,7 +14,9 @@ func main() {
 
 	site := &Site{}
 	site.Doc = dom.GetWindow().Document()
-	site.Wiki = wiki
 	site.Node = site.Doc.GetElementByID("app")
-	site.Bind()
+	site.Init()
+
+	site.Wiki = wiki
+	site.UpdateStages()
 }
