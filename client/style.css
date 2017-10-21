@@ -91,7 +91,7 @@ body {
 	margin: calc(0.5 * var(--main-padding));
 	padding-top: 2px;
 
-	width: 25em;
+	width: 28rem;
 	max-width: 100%;
 	height: calc(100% - var(--main-padding));
 

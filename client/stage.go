@@ -9,7 +9,8 @@ import (
 )
 
 type Stage struct {
-	Node dom.Element
+	Lineup *Lineup
+	Node   dom.Element
 
 	Title   string
 	Context string
@@ -21,8 +22,9 @@ type Stage struct {
 	Page     *Page
 }
 
-func NewStage(title, url string) *Stage {
+func NewStage(lineup *Lineup, title, url string) *Stage {
 	stage := &Stage{}
+	stage.Lineup = lineup
 	stage.Title = title
 	stage.URL = url
 	stage.Loading = true
@@ -48,6 +50,10 @@ func NewStage(title, url string) *Stage {
 	}, 3000)
 
 	return stage
+}
+
+func (stage *Stage) Close() {
+
 }
 
 func (stage *Stage) Update() {
@@ -89,6 +95,7 @@ func (stage *Stage) Render(item Item) dom.Element {
 			},
 			Link: func(spec string) {
 				link := h.A("", spec, h.Text(spec))
+				link.AddEventListener("click", false, stage.LinkClicked)
 				p.AppendChild(link)
 			},
 		}).Run(item.Text)
@@ -98,4 +105,13 @@ func (stage *Stage) Render(item Item) dom.Element {
 	}
 
 	return el
+}
+
+func (stage *Stage) LinkClicked(ev dom.Event) {
+	stage.Lineup.CloseTrailing(stage)
+	target := ev.Target()
+	stage.Lineup.Add(NewStage(stage.Lineup, target.TextContent(), target.GetAttribute("href")))
+
+	ev.StopPropagation()
+	ev.PreventDefault()
 }
