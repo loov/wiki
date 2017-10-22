@@ -146,9 +146,8 @@ body {
 	border-radius: 2px 2px 0 0;
 	cursor: pointer;
 }
-.status > .icon:first-child {
-	margin-left: 0;
-}
+.status > .icon:first-child { margin-left: 0;  }
+.status > .icon:last-child  { margin-right: 0; }
 
 .status > .icon:hover {
 	background: #eee;

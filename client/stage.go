@@ -47,7 +47,7 @@ func NewStage(lineup *Lineup, title, url string) *Stage {
 		stage.Loading = false
 		stage.Page = &Welcome
 		stage.Update()
-	}, 3000)
+	}, 150)
 
 	return stage
 }
@@ -60,9 +60,6 @@ func (stage *Stage) Update() {
 	stage.PageNode.SetInnerHTML("")
 	if stage.Page == nil || stage.Loading {
 		stage.Node.Class().Add("loading")
-		stage.PageNode.AppendChild(h.Fragment(
-			h.Div("title", h.Text(stage.Title)),
-		))
 	} else {
 		stage.Node.Class().Remove("loading")
 		stage.PageNode.AppendChild(h.Fragment(
@@ -108,10 +105,13 @@ func (stage *Stage) Render(item Item) dom.Element {
 }
 
 func (stage *Stage) LinkClicked(ev dom.Event) {
-	stage.Lineup.CloseTrailing(stage)
 	target := ev.Target()
-	stage.Lineup.Add(NewStage(stage.Lineup, target.TextContent(), target.GetAttribute("href")))
-
 	ev.StopPropagation()
 	ev.PreventDefault()
+
+	stage.Lineup.CloseTrailing(stage)
+
+	next := NewStage(stage.Lineup, target.TextContent(), target.GetAttribute("href"))
+	stage.Lineup.Add(next)
+	h.ScrollIntoView(next.Node)
 }
