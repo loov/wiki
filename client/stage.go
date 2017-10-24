@@ -1,7 +1,10 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 
 	"honnef.co/go/js/dom"
 
@@ -40,14 +43,9 @@ func NewStage(lineup *Lineup, title, url string) *Stage {
 		),
 		stage.PageNode,
 	)
-	stage.Update()
 
-	// simulate fetch
-	dom.GetWindow().SetTimeout(func() {
-		stage.Loading = false
-		stage.Page = &Welcome
-		stage.Update()
-	}, 150)
+	stage.Update()
+	go stage.fetch()
 
 	return stage
 }
@@ -69,6 +67,26 @@ func (stage *Stage) Update() {
 	}
 }
 
+func (stage *Stage) fetch() {
+	// TODO: proper threading
+	r, err := http.Get("/data/welcome.json")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	page := &Page{}
+	err = json.NewDecoder(r.Body).Decode(page)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	stage.Loading = false
+	stage.Page = page
+	stage.Update()
+}
+
 func (stage *Stage) RenderAll(items ...Item) []dom.Node {
 	rs := []dom.Node{}
 	for _, item := range items {
@@ -80,8 +98,8 @@ func (stage *Stage) RenderAll(items ...Item) []dom.Node {
 func (stage *Stage) Render(item Item) dom.Element {
 	el := h.Div("item")
 
-	switch item := item.(type) {
-	case *Paragraph:
+	switch item.Type() {
+	case "paragraph":
 		el.Class().Add("paragraph")
 		p := h.P()
 		(&Parser{
@@ -95,7 +113,7 @@ func (stage *Stage) Render(item Item) dom.Element {
 				link.AddEventListener("click", false, stage.LinkClicked)
 				p.AppendChild(link)
 			},
-		}).Run(item.Text)
+		}).Run(item.String("text"))
 	default:
 		el.Class().Add("missing")
 		el.SetInnerHTML(fmt.Sprintf("%+v", item))
