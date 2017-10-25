@@ -1,28 +1,12 @@
 {
 	"title": "Welcome",
 	"story": [{
+		"id": "123123123123",
 		"type": "paragraph",
-		"text": "Lorem [[ipsum]] dolor sit amet, consectetur adipisicing elit. Optio rerum nam architecto [[mollitia]] unde officia tempora reiciendis omnis quas, expedita, quia ad culpa. Porro explicabo temporibus, sunt officia vel corporis."
+		"text": "Welcome to this [[information navigation]]. Please see [[Introduction]]."
 	}, {
+		"id": "53185913845fajk",
 		"type": "paragraph",
-		"text": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae dolores consequatur officia [[at]] rem voluptatibus hic eos quo commodi minima? Ipsum commodi quae dolorum eum repudiandae provident saepe reiciendis vitae."
-	}, {
-		"type": "paragraph",
-		"text": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate porro obcaecati numquam [[asperiores]] dignissimos accusantium veniam, dolore, illo doloremque dolorum, qui aliquam repudiandae nihil neque autem. Quaerat mollitia error molestias."
-	}, {
-		"type": "paragraph",
-		"text": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima natus temporibus [[minus]] officia, repudiandae asperiores, nemo cum fugit rem repellat sequi iusto vero, explicabo corporis! Perspiciatis sequi, consectetur eveniet voluptate!"
-	}, {
-		"type": "paragraph",
-		"text": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio rerum nam architecto [[mollitia]] unde officia tempora reiciendis omnis quas, expedita, quia ad culpa. Porro explicabo temporibus, sunt officia vel corporis."
-	}, {
-		"type": "paragraph",
-		"text": "Lorem [[ipsum]] dolor sit amet, consectetur adipisicing elit. Quae dolores consequatur officia [[at]] rem voluptatibus hic eos quo commodi minima? Ipsum commodi quae dolorum eum repudiandae provident saepe reiciendis vitae."
-	}, {
-		"type": "paragraph",
-		"text": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate porro obcaecati numquam [[asperiores]] dignissimos accusantium veniam, dolore, illo doloremque dolorum, qui aliquam repudiandae nihil neque autem. Quaerat mollitia error molestias."
-	}, {
-		"type": "paragraph",
-		"text": "Lorem [[ipsum]] dolor sit amet, consectetur adipisicing elit. Minima natus temporibus [[minus]] officia, repudiandae asperiores, nemo cum fugit rem repellat sequi iusto vero, explicabo corporis! Perspiciatis sequi, consectetur eveniet voluptate!"
+		"text": "[[Error]] page."
 	}]
 }

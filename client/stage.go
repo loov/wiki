@@ -2,13 +2,24 @@ package client
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"log"
 	"net/http"
+	"strings"
 
 	"honnef.co/go/js/dom"
 
 	"github.com/loov/wiki/h"
+)
+
+type Status string
+
+const (
+	Loading Status = "loading"
+	Errored        = "error"
+	Denied         = "denied"
+	Missing        = "missing"
+	Loaded         = "loaded"
 )
 
 type Stage struct {
@@ -18,8 +29,8 @@ type Stage struct {
 	Title   string
 	Context string
 	URL     string
-	Loading bool
-	Editing bool
+	Status  Status
+	Error   error
 
 	PageNode dom.Element
 	Page     *Page
@@ -30,7 +41,7 @@ func NewStage(lineup *Lineup, title, url string) *Stage {
 	stage.Lineup = lineup
 	stage.Title = title
 	stage.URL = url
-	stage.Loading = true
+	stage.Status = Loading
 
 	stage.PageNode = h.Div("page")
 	h.AttachOverflowIndicator(stage.PageNode)
@@ -55,11 +66,31 @@ func (stage *Stage) Close() {
 }
 
 func (stage *Stage) Update() {
-	stage.PageNode.SetInnerHTML("")
-	if stage.Page == nil || stage.Loading {
+	if stage.Status == Loading {
 		stage.Node.Class().Add("loading")
 	} else {
 		stage.Node.Class().Remove("loading")
+	}
+
+	stage.PageNode.SetInnerHTML("")
+	switch stage.Status {
+	case Loading:
+	case Errored:
+		stage.PageNode.AppendChild(h.Fragment(
+			h.Div("title", h.Text("Error")),
+			h.P(stage.Error.Error()),
+		))
+	case Denied:
+		stage.PageNode.AppendChild(h.Fragment(
+			h.Div("title", h.Text("Access Denied")),
+			h.P(stage.Error.Error()),
+		))
+	case Missing:
+		stage.PageNode.AppendChild(h.Fragment(
+			h.Div("title", h.Text("Page missing")),
+			h.P(stage.Error.Error()),
+		))
+	case Loaded:
 		stage.PageNode.AppendChild(h.Fragment(
 			h.Div("title", h.Text(stage.Page.Title)),
 			h.Div("story", stage.RenderAll(stage.Page.Story...)...),
@@ -68,23 +99,32 @@ func (stage *Stage) Update() {
 }
 
 func (stage *Stage) fetch() {
+	defer stage.Update()
+
 	// TODO: proper threading
-	r, err := http.Get("/data/welcome.json")
+	r, err := http.Get(stage.URL)
 	if err != nil {
-		log.Println(err)
+		stage.Status = Errored
+		stage.Error = err
+		return
+	}
+
+	if r.StatusCode == 404 {
+		stage.Status = Missing
+		stage.Error = errors.New("Page missing")
 		return
 	}
 
 	page := &Page{}
 	err = json.NewDecoder(r.Body).Decode(page)
 	if err != nil {
-		log.Println(err)
+		stage.Status = Errored
+		stage.Error = fmt.Errorf("Invalid page: %v", err)
 		return
 	}
 
-	stage.Loading = false
+	stage.Status = Loaded
 	stage.Page = page
-	stage.Update()
 }
 
 func (stage *Stage) RenderAll(items ...Item) []dom.Node {
@@ -109,7 +149,8 @@ func (stage *Stage) Render(item Item) dom.Element {
 				p.AppendChild(h.Text(s))
 			},
 			Link: func(spec string) {
-				link := h.A("", spec, h.Text(spec))
+				slug := strings.ToLower(spec)
+				link := h.A("", "/data/"+slug+".json", h.Text(spec))
 				link.AddEventListener("click", false, stage.LinkClicked)
 				p.AppendChild(link)
 			},
