@@ -123,12 +123,12 @@ body {
 	font-size: calc(0.6 * var(--tool-height));
 }
 
-.status > .url {
+.status > .slug {
 	flex: 1;
 	color: #333;
 }
 
-.status > .icon {
+.status > .buttons > .button {
 	display: block;
 	height: var(--tool-height);
 	
@@ -146,14 +146,14 @@ body {
 	border-radius: 2px 2px 0 0;
 	cursor: pointer;
 }
-.status > .icon:first-child { margin-left: 0;  }
-.status > .icon:last-child  { margin-right: 0; }
+.status > .buttons > .button:first-child { margin-left: 0;  }
+.status > .buttons > .button:last-child  { margin-right: 0; }
 
-.status > .icon:hover {
+.status > .buttons > .button:hover {
 	background: #eee;
 }
 
-.page {
+.content {
 	border-top: 1px solid #ddd;
 	padding: var(--main-padding);
 	height: calc(100% - var(--tool-height) - var(--indicator-height));

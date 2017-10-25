@@ -7,7 +7,7 @@ import (
 
 func main() {
 	cl := client.New()
-	cl.Lineup.Open("Welcome", "/data/welcome.json")
+	cl.Lineup.Open("fedwiki", "Welcome", "/data/welcome.json")
 
 	dom.GetWindow().
 		Document().

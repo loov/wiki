@@ -17,8 +17,12 @@ func NewLineup() *Lineup {
 	return lineup
 }
 
-func (lineup *Lineup) Open(title, url string) {
-	lineup.Add(NewStage(lineup, title, url))
+func (lineup *Lineup) Open(provider, title, url string) {
+	if provider == "fedwiki" {
+		context := NewContext(title, url)
+		stage := NewStage(lineup, context)
+		lineup.Add(stage)
+	}
 }
 
 func (lineup *Lineup) indexOf(stage *Stage) int {
