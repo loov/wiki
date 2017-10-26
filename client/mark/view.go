@@ -124,5 +124,23 @@ func (view *View) Render() dom.Node {
 	mark := h.Div("markdown")
 	mark.SetInnerHTML(safehtml)
 
+	for _, link := range mark.GetElementsByTagName("a") {
+		link.AddEventListener("click", false, view.LinkClicked)
+	}
+
 	return mark
+}
+
+func (view *View) LinkClicked(ev dom.Event) {
+	target := ev.Target()
+	ev.StopPropagation()
+	ev.PreventDefault()
+
+	slug := target.GetAttribute("data-slug")
+	url := target.GetAttribute("href")
+	if slug == "" {
+		slug = url
+	}
+	child := view.Server.Open(target.TextContent(), slug)
+	view.Stage.OpenNext(child)
 }

@@ -14,7 +14,7 @@ func main() {
 
 	cl := client.New()
 	cl.Lineup.Servers[""] = mark.NewServer("/data/")
-	cl.Lineup.Open("", "Welcome", "welcome")
+	cl.Lineup.Open("", "Welcome", "welcome.md")
 
 	dom.GetWindow().
 		Document().

@@ -14,17 +14,17 @@ func NewServer(host string) *Server {
 	return &Server{host}
 }
 
-func (server *Server) CreateURL(slug string) string {
-	return server.Host + slug + ".md"
+func (server *Server) CreateURL(href string) string {
+	return server.Host + href
 }
 
-func (server *Server) Open(title, slug string) client.View {
+func (server *Server) Open(title, href string) client.View {
 	target := server
-	url := slug
-	if strings.HasPrefix(slug, "http://") || strings.HasPrefix(slug, "https://") {
+	url := href
+	if strings.HasPrefix(href, "http://") || strings.HasPrefix(href, "https://") {
 		target = server
 	} else {
-		url = server.CreateURL(slug)
+		url = server.CreateURL(href)
 	}
 	return NewView(target, title, url)
 }
