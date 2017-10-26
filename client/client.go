@@ -1,8 +1,9 @@
 package client
 
 import (
-	"github.com/loov/wiki/h"
 	"honnef.co/go/js/dom"
+
+	"github.com/loov/wiki/h"
 )
 
 type Client struct {

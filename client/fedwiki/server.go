@@ -1,9 +1,30 @@
 package fedwiki
 
-import "github.com/loov/wiki/client"
+import (
+	"strings"
 
-type Server struct{}
+	"github.com/loov/wiki/client"
+)
 
-func (server *Server) Open(title, url string) client.View {
-	return NewView(title, url)
+type Server struct {
+	Host string
+}
+
+func NewServer(host string) *Server {
+	return &Server{Host: host}
+}
+
+func (server *Server) CreateURL(slug string) string {
+	return server.Host + "/data/" + slug + ".json"
+}
+
+func (server *Server) Open(title, slug string) client.View {
+	target := server
+	url := slug
+	if strings.HasPrefix(slug, "http://") || strings.HasPrefix(slug, "https://") {
+		target = server
+	} else {
+		url = server.CreateURL(slug)
+	}
+	return NewView(target, title, url)
 }

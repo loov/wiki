@@ -24,6 +24,7 @@ const (
 )
 
 type View struct {
+	Server client.Server
 	Stage  *client.Stage
 	Status Status
 
@@ -34,8 +35,9 @@ type View struct {
 	Page *Page
 }
 
-func NewView(title, url string) *View {
+func NewView(server client.Server, title, url string) *View {
 	view := &View{}
+	view.Server = server
 	view.Status = Loading
 	view.Title = title
 	view.URL = url
@@ -139,7 +141,9 @@ func (view *View) Render(item Item) dom.Element {
 			},
 			Link: func(spec string) {
 				slug := strings.ToLower(spec)
-				link := h.A("", "/data/"+slug+".json", h.Text(spec))
+				url := view.Server.CreateURL(slug)
+				link := h.A("", url, h.Text(spec))
+				link.SetAttribute("data-slug", slug)
 				link.AddEventListener("click", false, view.LinkClicked)
 				p.AppendChild(link)
 			},
@@ -157,6 +161,11 @@ func (view *View) LinkClicked(ev dom.Event) {
 	ev.StopPropagation()
 	ev.PreventDefault()
 
-	child := NewView(target.TextContent(), target.GetAttribute("href"))
+	slug := target.GetAttribute("data-slug")
+	url := target.GetAttribute("href")
+	if slug == "" {
+		slug = url
+	}
+	child := view.Server.Open(target.TextContent(), slug)
 	view.Stage.OpenNext(child)
 }

@@ -8,7 +8,8 @@ import (
 
 // Server allows opening up a particular View
 type Server interface {
-	Open(title, url string) View
+	Open(title, slug string) View
+	CreateURL(slug string) string
 }
 
 // View implements everything necessary to content
@@ -31,13 +32,13 @@ func NewLineup() *Lineup {
 	return lineup
 }
 
-func (lineup *Lineup) Open(serverName, title, url string) {
-	server := lineup.Servers[serverName]
+func (lineup *Lineup) Open(host, title, slug string) {
+	server := lineup.Servers[host]
 	if server == nil {
 		server = lineup.Servers[""]
 	}
 
-	view := server.Open(title, url)
+	view := server.Open(title, slug)
 	stage := NewStage(lineup, view)
 	lineup.Add(stage)
 }
