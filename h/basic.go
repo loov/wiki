@@ -19,6 +19,16 @@ func Div(className string, children ...dom.Node) dom.Element {
 	return Tag("div", className, children...)
 }
 
+func H1(className string, children ...dom.Node) dom.Element {
+	return Tag("h1", className, children...)
+}
+func H2(className string, children ...dom.Node) dom.Element {
+	return Tag("h2", className, children...)
+}
+func H3(className string, children ...dom.Node) dom.Element {
+	return Tag("h3", className, children...)
+}
+
 func P(children ...string) dom.Element {
 	el := dom.GetWindow().Document().CreateElement("p")
 	for _, child := range children {

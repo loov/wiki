@@ -65,22 +65,22 @@ func (view *View) Update() {
 	case Loading:
 	case Errored:
 		page.AppendChild(h.Fragment(
-			h.Div("title", h.Text("Error")),
+			h.H1("", h.Text("Error")),
 			h.P(view.Error.Error()),
 		))
 	case Denied:
 		page.AppendChild(h.Fragment(
-			h.Div("title", h.Text("Access Denied")),
+			h.H1("", h.Text("Access Denied")),
 			h.P(view.Error.Error()),
 		))
 	case Missing:
 		page.AppendChild(h.Fragment(
-			h.Div("title", h.Text("Page missing")),
+			h.H1("", h.Text("Page missing")),
 			h.P(view.Error.Error()),
 		))
 	case Loaded:
 		page.AppendChild(h.Fragment(
-			h.Div("title", h.Text(view.Page.Title)),
+			h.H1("", h.Text(view.Page.Title)),
 			h.Div("story", view.RenderAll(view.Page.Story...)...),
 		))
 	}
