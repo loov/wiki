@@ -9,8 +9,8 @@ import (
 func main() {
 	cl := client.New()
 
-	cl.Lineup.Providers["fedwiki"] = &fedwiki.Provider{}
-	cl.Lineup.Providers[""] = cl.Lineup.Providers["fedwiki"]
+	cl.Lineup.Servers["fedwiki"] = &fedwiki.Server{}
+	cl.Lineup.Servers[""] = cl.Lineup.Servers["fedwiki"]
 
 	cl.Lineup.Open("fedwiki", "Welcome", "/data/welcome.json")
 

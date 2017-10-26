@@ -6,37 +6,39 @@ import (
 	"github.com/loov/wiki/h"
 )
 
-type Context interface {
-	Attach(stage *Stage)
-	Detach()
+// Server allows opening up a particular View
+type Server interface {
+	Open(title, url string) View
 }
 
-type Provider interface {
-	Open(title, url string) Context
+// View implements everything necessary to content
+type View interface {
+	Attach(stage *Stage)
+	Detach()
 }
 
 type Lineup struct {
 	Node dom.Element
 	List []*Stage
 
-	Providers map[string]Provider
+	Servers map[string]Server
 }
 
 func NewLineup() *Lineup {
 	lineup := &Lineup{}
 	lineup.Node = h.Div("lineup")
-	lineup.Providers = make(map[string]Provider)
+	lineup.Servers = make(map[string]Server)
 	return lineup
 }
 
-func (lineup *Lineup) Open(providerName, title, url string) {
-	provider := lineup.Providers[providerName]
-	if provider == nil {
-		provider = lineup.Providers[""]
+func (lineup *Lineup) Open(serverName, title, url string) {
+	server := lineup.Servers[serverName]
+	if server == nil {
+		server = lineup.Servers[""]
 	}
 
-	context := provider.Open(title, url)
-	stage := NewStage(lineup, context)
+	view := server.Open(title, url)
+	stage := NewStage(lineup, view)
 	lineup.Add(stage)
 }
 

@@ -1,9 +1,5 @@
 package fedwiki
 
-type Paragraph struct {
-	Text string
-}
-
 type Parser struct {
 	Begin func()
 	Text  func(s string)

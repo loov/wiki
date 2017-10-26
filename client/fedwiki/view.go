@@ -23,7 +23,7 @@ const (
 	Loaded         = "loaded"
 )
 
-type Context struct {
+type View struct {
 	Stage  *client.Stage
 	Status Status
 
@@ -34,97 +34,97 @@ type Context struct {
 	Page *Page
 }
 
-func NewContext(title, url string) *Context {
-	context := &Context{}
-	context.Status = Loading
-	context.Title = title
-	context.URL = url
-	return context
+func NewView(title, url string) *View {
+	view := &View{}
+	view.Status = Loading
+	view.Title = title
+	view.URL = url
+	return view
 }
 
-func (context *Context) Attach(stage *client.Stage) {
-	context.Stage = stage
+func (view *View) Attach(stage *client.Stage) {
+	view.Stage = stage
 
-	context.Update()
-	go context.fetch()
+	view.Update()
+	go view.fetch()
 }
 
-func (context *Context) Detach() {
+func (view *View) Detach() {
 	// TODO: cancel all pending requests
-	context.Stage = nil
+	view.Stage = nil
 }
 
-func (context *Context) Update() {
-	context.Stage.SetTag("loading", context.Status == Loading)
-	context.Stage.SetSlug(h.Text("[loov.io] " + context.URL))
-	context.Stage.SetButtons(h.Div("button", h.Text("Edit")))
+func (view *View) Update() {
+	view.Stage.SetTag("loading", view.Status == Loading)
+	view.Stage.SetSlug(h.Text("[loov.io] " + view.URL))
+	view.Stage.SetButtons(h.Div("button", h.Text("Edit")))
 
 	page := h.Div("page")
-	switch context.Status {
+	switch view.Status {
 	case Loading:
 	case Errored:
 		page.AppendChild(h.Fragment(
 			h.Div("title", h.Text("Error")),
-			h.P(context.Error.Error()),
+			h.P(view.Error.Error()),
 		))
 	case Denied:
 		page.AppendChild(h.Fragment(
 			h.Div("title", h.Text("Access Denied")),
-			h.P(context.Error.Error()),
+			h.P(view.Error.Error()),
 		))
 	case Missing:
 		page.AppendChild(h.Fragment(
 			h.Div("title", h.Text("Page missing")),
-			h.P(context.Error.Error()),
+			h.P(view.Error.Error()),
 		))
 	case Loaded:
 		page.AppendChild(h.Fragment(
-			h.Div("title", h.Text(context.Page.Title)),
-			h.Div("story", context.RenderAll(context.Page.Story...)...),
+			h.Div("title", h.Text(view.Page.Title)),
+			h.Div("story", view.RenderAll(view.Page.Story...)...),
 		))
 	}
 
-	context.Stage.SetContent(page)
+	view.Stage.SetContent(page)
 }
 
-func (context *Context) fetch() {
-	defer context.Update()
+func (view *View) fetch() {
+	defer view.Update()
 
 	// TODO: proper threading
-	r, err := http.Get(context.URL)
+	r, err := http.Get(view.URL)
 	if err != nil {
-		context.Status = Errored
-		context.Error = err
+		view.Status = Errored
+		view.Error = err
 		return
 	}
 
 	if r.StatusCode == 404 {
-		context.Status = Missing
-		context.Error = errors.New("Page missing")
+		view.Status = Missing
+		view.Error = errors.New("Page missing")
 		return
 	}
 
 	page := &Page{}
 	err = json.NewDecoder(r.Body).Decode(page)
 	if err != nil {
-		context.Status = Errored
-		context.Error = fmt.Errorf("Invalid page: %v", err)
+		view.Status = Errored
+		view.Error = fmt.Errorf("Invalid page: %v", err)
 		return
 	}
 
-	context.Status = Loaded
-	context.Page = page
+	view.Status = Loaded
+	view.Page = page
 }
 
-func (context *Context) RenderAll(items ...Item) []dom.Node {
+func (view *View) RenderAll(items ...Item) []dom.Node {
 	rs := []dom.Node{}
 	for _, item := range items {
-		rs = append(rs, context.Render(item))
+		rs = append(rs, view.Render(item))
 	}
 	return rs
 }
 
-func (context *Context) Render(item Item) dom.Element {
+func (view *View) Render(item Item) dom.Element {
 	el := h.Div("item")
 
 	switch item.Type() {
@@ -140,7 +140,7 @@ func (context *Context) Render(item Item) dom.Element {
 			Link: func(spec string) {
 				slug := strings.ToLower(spec)
 				link := h.A("", "/data/"+slug+".json", h.Text(spec))
-				link.AddEventListener("click", false, context.LinkClicked)
+				link.AddEventListener("click", false, view.LinkClicked)
 				p.AppendChild(link)
 			},
 		}).Run(item.String("text"))
@@ -152,11 +152,11 @@ func (context *Context) Render(item Item) dom.Element {
 	return el
 }
 
-func (context *Context) LinkClicked(ev dom.Event) {
+func (view *View) LinkClicked(ev dom.Event) {
 	target := ev.Target()
 	ev.StopPropagation()
 	ev.PreventDefault()
 
-	child := NewContext(target.TextContent(), target.GetAttribute("href"))
-	context.Stage.Open(child)
+	child := NewView(target.TextContent(), target.GetAttribute("href"))
+	view.Stage.OpenNext(child)
 }

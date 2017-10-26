@@ -7,8 +7,8 @@ import (
 )
 
 type Stage struct {
-	Lineup  *Lineup
-	Context Context
+	Lineup *Lineup
+	View   View
 
 	Node    dom.Element
 	Slug    dom.Element
@@ -16,10 +16,10 @@ type Stage struct {
 	Content dom.Element
 }
 
-func NewStage(lineup *Lineup, context Context) *Stage {
+func NewStage(lineup *Lineup, view View) *Stage {
 	stage := &Stage{}
 	stage.Lineup = lineup
-	stage.Context = context
+	stage.View = view
 
 	stage.Content = h.Div("content")
 	stage.Slug = h.Div("slug")
@@ -34,7 +34,7 @@ func NewStage(lineup *Lineup, context Context) *Stage {
 	)
 
 	h.AttachOverflowIndicator(stage.Content)
-	stage.Context.Attach(stage)
+	stage.View.Attach(stage)
 
 	return stage
 }
@@ -62,9 +62,9 @@ func (stage *Stage) SetContent(node dom.Node) {
 	stage.Content.AppendChild(node)
 }
 
-func (stage *Stage) Open(childContext Context) {
+func (stage *Stage) OpenNext(view View) {
 	// TODO: is this the best place for it?
-	next := NewStage(stage.Lineup, childContext)
+	next := NewStage(stage.Lineup, view)
 
 	stage.Lineup.CloseTrailing(stage)
 	stage.Lineup.Add(next)
@@ -73,5 +73,5 @@ func (stage *Stage) Open(childContext Context) {
 }
 
 func (stage *Stage) Close() {
-	stage.Context.Detach()
+	stage.View.Detach()
 }
