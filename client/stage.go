@@ -8,7 +8,7 @@ import (
 
 type Stage struct {
 	Lineup  *Lineup
-	Context *Context
+	Context Context
 
 	Node    dom.Element
 	Slug    dom.Element
@@ -16,7 +16,7 @@ type Stage struct {
 	Content dom.Element
 }
 
-func NewStage(lineup *Lineup, context *Context) *Stage {
+func NewStage(lineup *Lineup, context Context) *Stage {
 	stage := &Stage{}
 	stage.Lineup = lineup
 	stage.Context = context
@@ -62,7 +62,7 @@ func (stage *Stage) SetContent(node dom.Node) {
 	stage.Content.AppendChild(node)
 }
 
-func (stage *Stage) Open(childContext *Context) {
+func (stage *Stage) Open(childContext Context) {
 	// TODO: is this the best place for it?
 	next := NewStage(stage.Lineup, childContext)
 

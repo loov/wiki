@@ -1,4 +1,4 @@
-package client
+package fedwiki
 
 type Paragraph struct {
 	Text string

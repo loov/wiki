@@ -6,23 +6,38 @@ import (
 	"github.com/loov/wiki/h"
 )
 
+type Context interface {
+	Attach(stage *Stage)
+	Detach()
+}
+
+type Provider interface {
+	Open(title, url string) Context
+}
+
 type Lineup struct {
 	Node dom.Element
 	List []*Stage
+
+	Providers map[string]Provider
 }
 
 func NewLineup() *Lineup {
 	lineup := &Lineup{}
 	lineup.Node = h.Div("lineup")
+	lineup.Providers = make(map[string]Provider)
 	return lineup
 }
 
-func (lineup *Lineup) Open(provider, title, url string) {
-	if provider == "fedwiki" {
-		context := NewContext(title, url)
-		stage := NewStage(lineup, context)
-		lineup.Add(stage)
+func (lineup *Lineup) Open(providerName, title, url string) {
+	provider := lineup.Providers[providerName]
+	if provider == nil {
+		provider = lineup.Providers[""]
 	}
+
+	context := provider.Open(title, url)
+	stage := NewStage(lineup, context)
+	lineup.Add(stage)
 }
 
 func (lineup *Lineup) indexOf(stage *Stage) int {

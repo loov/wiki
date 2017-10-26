@@ -1,4 +1,4 @@
-package client
+package fedwiki
 
 import (
 	"encoding/json"
@@ -9,6 +9,7 @@ import (
 
 	"honnef.co/go/js/dom"
 
+	"github.com/loov/wiki/client"
 	"github.com/loov/wiki/h"
 )
 
@@ -23,7 +24,7 @@ const (
 )
 
 type Context struct {
-	Stage  *Stage
+	Stage  *client.Stage
 	Status Status
 
 	Error error
@@ -41,7 +42,7 @@ func NewContext(title, url string) *Context {
 	return context
 }
 
-func (context *Context) Attach(stage *Stage) {
+func (context *Context) Attach(stage *client.Stage) {
 	context.Stage = stage
 
 	context.Update()
