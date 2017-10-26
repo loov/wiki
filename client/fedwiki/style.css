@@ -6,3 +6,13 @@
 .page > .story {
 	contain: paint;
 }
+
+.page > .story > .factory {
+	border: 1px dotted #ccc;
+	background: #eee;
+
+	font-size: 0.8em;
+	padding: 1em;
+
+	text-align: center;
+}

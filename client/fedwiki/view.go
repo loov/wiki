@@ -57,7 +57,7 @@ func (view *View) Detach() {
 
 func (view *View) Update() {
 	view.Stage.SetTag("loading", view.Status == Loading)
-	view.Stage.SetSlug(h.Text("[loov.io] " + view.URL))
+	view.Stage.SetSlug(h.Text(view.URL))
 	view.Stage.SetButtons(h.Div("button", h.Text("Edit")))
 
 	page := h.Div("page")
@@ -147,6 +147,25 @@ func (view *View) Render(item Item) dom.Element {
 				p.AppendChild(link)
 			},
 		}).Run(item.String("text"))
+	case "factory":
+		el.Class().Add("factory")
+		el.SetTextContent(item.String("prompt"))
+	case "html":
+		el.Class().Add("html")
+		// TODO: add sanitization
+		el.SetInnerHTML(item.String("text"))
+	case "reference":
+		el.Class().Add("reference")
+		site := item.String("site")
+		link := h.A("", "http://"+site, h.Text(item.String("title")))
+		link.SetAttribute("data-site", site)
+		link.AddEventListener("click", false, view.ReferenceLinkClicked)
+
+		el.AppendChild(h.Tag("p", "",
+			link,
+			h.Text(" - "),
+			h.Text(item.String("text")),
+		))
 	default:
 		el.Class().Add("missing")
 		el.SetInnerHTML(fmt.Sprintf("%+v", item))
@@ -166,5 +185,16 @@ func (view *View) LinkClicked(ev dom.Event) {
 		slug = url
 	}
 	child := view.Server.Open(target.TextContent(), slug)
+	view.Stage.OpenNext(child)
+}
+
+func (view *View) ReferenceLinkClicked(ev dom.Event) {
+	target := ev.Target()
+	ev.StopPropagation()
+	ev.PreventDefault()
+
+	site := target.GetAttribute("data-site")
+	server := &Server{"http://" + site + "/"}
+	child := server.Open(target.TextContent(), "welcome-visitors")
 	view.Stage.OpenNext(child)
 }
