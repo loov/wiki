@@ -9,8 +9,8 @@ import (
 
 func main() {
 	cl := client.New()
-	cl.Lineup.Servers[""] = fedwiki.NewServer("")
-	cl.Lineup.Open("", "Welcome", "welcome")
+	cl.Lineup.Servers[""] = fedwiki.NewServer("http://fed.wiki/")
+	cl.Lineup.Open("", "Welcome Visitors", "welcome-visitors")
 
 	dom.GetWindow().
 		Document().

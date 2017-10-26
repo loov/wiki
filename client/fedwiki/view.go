@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"honnef.co/go/js/dom"
 
@@ -140,7 +139,7 @@ func (view *View) Render(item Item) dom.Element {
 				p.AppendChild(h.Text(s))
 			},
 			Link: func(spec string) {
-				slug := strings.ToLower(spec)
+				slug := Slugify(spec)
 				url := view.Server.CreateURL(slug)
 				link := h.A("", url, h.Text(spec))
 				link.SetAttribute("data-slug", slug)

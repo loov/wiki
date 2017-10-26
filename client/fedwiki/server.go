@@ -15,7 +15,7 @@ func NewServer(host string) *Server {
 }
 
 func (server *Server) CreateURL(slug string) string {
-	return server.Host + "/data/" + slug + ".json"
+	return server.Host + slug + ".json"
 }
 
 func (server *Server) Open(title, slug string) client.View {
