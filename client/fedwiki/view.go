@@ -147,6 +147,7 @@ func (view *View) Render(item Item) dom.Element {
 				link := h.A("", url, h.Text(spec))
 				link.SetAttribute("data-slug", slug)
 				link.AddEventListener("click", false, view.LinkClicked)
+				link.AddEventListener("auxclick", false, view.LinkClicked)
 				p.AppendChild(link)
 			},
 		}).Run(item.String("text"))
@@ -163,6 +164,7 @@ func (view *View) Render(item Item) dom.Element {
 		link := h.A("", "http://"+site, h.Text(item.String("title")))
 		link.SetAttribute("data-site", site)
 		link.AddEventListener("click", false, view.ReferenceLinkClicked)
+		link.AddEventListener("auxclick", false, view.ReferenceLinkClicked)
 
 		el.AppendChild(h.Tag("p", "",
 			link,
@@ -188,7 +190,8 @@ func (view *View) LinkClicked(ev dom.Event) {
 		slug = url
 	}
 	child := view.Server.Open(target.TextContent(), slug)
-	view.Stage.OpenNext(child)
+
+	view.Stage.Open(child, h.IsMiddleClick(ev))
 }
 
 func (view *View) ReferenceLinkClicked(ev dom.Event) {
@@ -199,5 +202,6 @@ func (view *View) ReferenceLinkClicked(ev dom.Event) {
 	site := target.GetAttribute("data-site")
 	server := &Server{"http://" + site + "/"}
 	child := server.Open(target.TextContent(), "welcome-visitors")
-	view.Stage.OpenNext(child)
+
+	view.Stage.Open(child, h.IsMiddleClick(ev))
 }

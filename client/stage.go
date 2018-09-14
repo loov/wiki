@@ -62,20 +62,13 @@ func (stage *Stage) SetContent(node dom.Node) {
 	stage.Content.AppendChild(node)
 }
 
-func (stage *Stage) OpenNext(view View) {
+func (stage *Stage) Open(view View, append bool) {
 	// TODO: is this the best place for it?
 	next := NewStage(stage.Lineup, view)
 
-	stage.Lineup.CloseTrailing(stage)
-	stage.Lineup.Add(next)
-
-	h.ScrollIntoView(next.Node)
-}
-
-func (stage *Stage) OpenLast(view View) {
-	// TODO: is this the best place for it?
-	next := NewStage(stage.Lineup, view)
-
+	if !append {
+		stage.Lineup.CloseTrailing(stage)
+	}
 	stage.Lineup.Add(next)
 
 	h.ScrollIntoView(next.Node)

@@ -137,12 +137,5 @@ func (view *View) LinkClicked(ev dom.Event) {
 	}
 	child := view.Server.Open(target.TextContent(), slug)
 
-	if click, ok := ev.(*dom.MouseEvent); ok {
-		if click.Button == 1 {
-			view.Stage.OpenLast(child)
-			return
-		}
-
-		view.Stage.OpenNext(child)
-	}
+	view.Stage.Open(child, h.IsMiddleClick(ev))
 }
