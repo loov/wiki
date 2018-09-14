@@ -2,11 +2,9 @@ package mark
 
 import (
 	"errors"
-	"fmt"
-	"io/ioutil"
-	"net/http"
 
 	"honnef.co/go/js/dom"
+	"honnef.co/go/js/xhr"
 
 	"github.com/microcosm-cc/bluemonday"
 	"gopkg.in/russross/blackfriday.v2"
@@ -89,29 +87,24 @@ func (view *View) Update() {
 func (view *View) fetch() {
 	defer view.Update()
 
-	// TODO: proper threading
-	r, err := http.Get(view.URL)
+	r := xhr.NewRequest("GET", view.URL)
+	// r.Timeout = 5000
+	r.ResponseType = xhr.Text
+
+	err := r.Send(nil)
 	if err != nil {
 		view.Status = Errored
 		view.Error = err
 		return
 	}
-
-	if r.StatusCode == 404 {
+	if r.Status == 404 {
 		view.Status = Missing
 		view.Error = errors.New("Page missing")
 		return
 	}
 
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		view.Status = Errored
-		view.Error = fmt.Errorf("Invalid page: %v", err)
-		return
-	}
-
 	view.Status = Loaded
-	view.Content = string(data)
+	view.Content = r.ResponseText
 }
 
 func (view *View) Render() dom.Node {

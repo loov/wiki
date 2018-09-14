@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
+	"strings"
 
 	"honnef.co/go/js/dom"
+	"honnef.co/go/js/xhr"
 
 	"github.com/loov/wiki/client"
 	"github.com/loov/wiki/h"
@@ -91,22 +92,24 @@ func (view *View) Update() {
 func (view *View) fetch() {
 	defer view.Update()
 
-	// TODO: proper threading
-	r, err := http.Get(view.URL)
+	r := xhr.NewRequest("GET", view.URL)
+	// r.Timeout = 5000
+	r.ResponseType = xhr.JSON
+
+	err := r.Send(nil)
 	if err != nil {
 		view.Status = Errored
 		view.Error = err
 		return
 	}
-
-	if r.StatusCode == 404 {
+	if r.Status == 404 {
 		view.Status = Missing
 		view.Error = errors.New("Page missing")
 		return
 	}
 
 	page := &Page{}
-	err = json.NewDecoder(r.Body).Decode(page)
+	err = json.NewDecoder(strings.NewReader(r.ResponseText)).Decode(page)
 	if err != nil {
 		view.Status = Errored
 		view.Error = fmt.Errorf("Invalid page: %v", err)
