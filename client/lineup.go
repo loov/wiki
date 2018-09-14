@@ -6,8 +6,8 @@ import (
 	"github.com/loov/wiki/h"
 )
 
-// Server allows opening up a particular View
-type Server interface {
+// Context allows opening up a particular View
+type Context interface {
 	Open(title, slug string) View
 	CreateURL(slug string) string
 }
@@ -22,20 +22,20 @@ type Lineup struct {
 	Node dom.Element
 	List []*Stage
 
-	Servers map[string]Server
+	Contexts map[string]Context
 }
 
 func NewLineup() *Lineup {
 	lineup := &Lineup{}
 	lineup.Node = h.Div("lineup")
-	lineup.Servers = make(map[string]Server)
+	lineup.Contexts = make(map[string]Context)
 	return lineup
 }
 
 func (lineup *Lineup) Open(host, title, slug string) {
-	server := lineup.Servers[host]
+	server := lineup.Contexts[host]
 	if server == nil {
-		server = lineup.Servers[""]
+		server = lineup.Contexts[""]
 	}
 
 	view := server.Open(title, slug)

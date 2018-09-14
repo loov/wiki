@@ -24,9 +24,9 @@ const (
 )
 
 type View struct {
-	Server client.Server
-	Stage  *client.Stage
-	Status Status
+	Context client.Context
+	Stage   *client.Stage
+	Status  Status
 
 	Error error
 	Title string
@@ -35,9 +35,9 @@ type View struct {
 	Page *Page
 }
 
-func NewView(server client.Server, title, url string) *View {
+func NewView(context client.Context, title, url string) *View {
 	view := &View{}
-	view.Server = server
+	view.Context = context
 	view.Status = Loading
 	view.Title = title
 	view.URL = url
@@ -143,7 +143,7 @@ func (view *View) Render(item Item) dom.Element {
 			},
 			Link: func(spec string) {
 				slug := Slugify(spec)
-				url := view.Server.CreateURL(slug)
+				url := view.Context.CreateURL(slug)
 				link := h.A("", url, h.Text(spec))
 				link.SetAttribute("data-slug", slug)
 				link.AddEventListener("click", false, view.LinkClicked)
@@ -189,7 +189,7 @@ func (view *View) LinkClicked(ev dom.Event) {
 	if slug == "" {
 		slug = url
 	}
-	child := view.Server.Open(target.TextContent(), slug)
+	child := view.Context.Open(target.TextContent(), slug)
 
 	view.Stage.Open(child, h.IsMiddleClick(ev))
 }
@@ -200,8 +200,8 @@ func (view *View) ReferenceLinkClicked(ev dom.Event) {
 	ev.PreventDefault()
 
 	site := target.GetAttribute("data-site")
-	server := &Server{"http://" + site + "/"}
-	child := server.Open(target.TextContent(), "welcome-visitors")
+	context := &Context{"http://" + site + "/"}
+	child := context.Open(target.TextContent(), "welcome-visitors")
 
 	view.Stage.Open(child, h.IsMiddleClick(ev))
 }

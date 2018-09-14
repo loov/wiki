@@ -9,11 +9,11 @@ import (
 )
 
 func main() {
-	_ = fedwiki.Server{}
-	_ = mark.Server{}
+	_ = fedwiki.Context{}
+	_ = mark.Context{}
 
 	cl := client.New()
-	cl.Lineup.Servers[""] = mark.NewServer("/data/")
+	cl.Lineup.Contexts[""] = mark.NewContext("/data/")
 	cl.Lineup.Open("", "Welcome", "welcome.md")
 
 	dom.GetWindow().

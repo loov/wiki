@@ -6,25 +6,25 @@ import (
 	"github.com/loov/wiki/client"
 )
 
-type Server struct {
+type Context struct {
 	Host string
 }
 
-func NewServer(host string) *Server {
-	return &Server{Host: host}
+func NewContext(host string) *Context {
+	return &Context{Host: host}
 }
 
-func (server *Server) CreateURL(slug string) string {
-	return server.Host + slug + ".json"
+func (context *Context) CreateURL(slug string) string {
+	return context.Host + slug + ".json"
 }
 
-func (server *Server) Open(title, slug string) client.View {
-	target := server
+func (context *Context) Open(title, slug string) client.View {
+	target := context
 	url := slug
 	if strings.HasPrefix(slug, "http://") || strings.HasPrefix(slug, "https://") {
-		target = server
+		target = context
 	} else {
-		url = server.CreateURL(slug)
+		url = context.CreateURL(slug)
 	}
 	return NewView(target, title, url)
 }

@@ -24,9 +24,9 @@ const (
 )
 
 type View struct {
-	Server client.Server
-	Stage  *client.Stage
-	Status Status
+	Context client.Context
+	Stage   *client.Stage
+	Status  Status
 
 	Error error
 	URL   string
@@ -34,9 +34,9 @@ type View struct {
 	Content string
 }
 
-func NewView(server client.Server, title, url string) *View {
+func NewView(context client.Context, title, url string) *View {
 	view := &View{}
-	view.Server = server
+	view.Context = context
 	view.Status = Loading
 	view.URL = url
 	return view
@@ -135,7 +135,7 @@ func (view *View) LinkClicked(ev dom.Event) {
 	if slug == "" {
 		slug = url
 	}
-	child := view.Server.Open(target.TextContent(), slug)
+	child := view.Context.Open(target.TextContent(), slug)
 
 	view.Stage.Open(child, h.IsMiddleClick(ev))
 }
