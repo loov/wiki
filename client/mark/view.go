@@ -119,6 +119,7 @@ func (view *View) Render() dom.Node {
 
 	for _, link := range mark.GetElementsByTagName("a") {
 		link.AddEventListener("click", false, view.LinkClicked)
+		link.AddEventListener("auxclick", false, view.LinkClicked)
 	}
 
 	return mark
@@ -135,5 +136,13 @@ func (view *View) LinkClicked(ev dom.Event) {
 		slug = url
 	}
 	child := view.Server.Open(target.TextContent(), slug)
-	view.Stage.OpenNext(child)
+
+	if click, ok := ev.(*dom.MouseEvent); ok {
+		if click.Button == 1 {
+			view.Stage.OpenLast(child)
+			return
+		}
+
+		view.Stage.OpenNext(child)
+	}
 }

@@ -72,6 +72,15 @@ func (stage *Stage) OpenNext(view View) {
 	h.ScrollIntoView(next.Node)
 }
 
+func (stage *Stage) OpenLast(view View) {
+	// TODO: is this the best place for it?
+	next := NewStage(stage.Lineup, view)
+
+	stage.Lineup.Add(next)
+
+	h.ScrollIntoView(next.Node)
+}
+
 func (stage *Stage) Close() {
 	stage.View.Detach()
 }
