@@ -16,7 +16,7 @@ func New() *Client {
 	site := &Client{}
 	site.Search = NewSearch()
 	site.Lineup = NewLineup()
-	site.Node = h.Div("app",
+	site.Node = h.Div("app hide-search",
 		h.Div("header",
 			site.Search.Node,
 		),

@@ -1,13 +1,18 @@
 package h
 
 import (
+	"strings"
+
 	"honnef.co/go/js/dom"
 )
 
 func Tag(tag string, className string, children ...dom.Node) dom.Element {
 	el := dom.GetWindow().Document().CreateElement(tag)
 	if className != "" {
-		el.Class().Add(className)
+		classNames := strings.Fields(className)
+		for _, className := range classNames {
+			el.Class().Add(className)
+		}
 	}
 	for _, child := range children {
 		el.AppendChild(child)
