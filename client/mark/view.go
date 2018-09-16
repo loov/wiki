@@ -55,6 +55,10 @@ func (view *View) Detach() {
 }
 
 func (view *View) Update() {
+	if view.Stage == nil {
+		return
+	}
+
 	view.Stage.SetTag("loading", view.Status == Loading)
 	view.Stage.SetSlug(h.Text(view.URL))
 	view.Stage.SetButtons(h.Div("button", h.Text("Edit")))
@@ -126,6 +130,10 @@ func (view *View) Render() dom.Node {
 }
 
 func (view *View) LinkClicked(ev dom.Event) {
+	if view.Stage == nil {
+		return
+	}
+
 	target := ev.Target()
 	ev.StopPropagation()
 	ev.PreventDefault()
