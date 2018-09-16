@@ -1,23 +1,58 @@
 package main
 
 import (
-	"honnef.co/go/js/dom"
-
-	"github.com/loov/wiki/client"
-	"github.com/loov/wiki/client/fedwiki"
-	"github.com/loov/wiki/client/mark"
+	"log"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"os"
+	"os/exec"
+	"sync"
 )
 
 func main() {
-	_ = fedwiki.Context{}
-	_ = mark.Context{}
+	proxy := &httputil.ReverseProxy{
+		Director: func(r *http.Request) {
+			r.URL, _ = url.Parse(r.URL.Query().Get("url"))
+		},
+	}
+	http.Handle("/proxy", proxy)
 
-	cl := client.New()
-	cl.Lineup.Contexts[""] = mark.NewContext("/data/")
-	cl.Lineup.Open("", "Welcome", "welcome.md")
+	http.Handle("/data/", http.StripPrefix("/data", http.FileServer(http.Dir("data"))))
+	http.Handle("/client/", http.StripPrefix("/client", http.FileServer(http.Dir("client"))))
 
-	dom.GetWindow().
-		Document().
-		DocumentElement().
-		AppendChild(cl.Node)
+	http.HandleFunc("/", serveIndex)
+	http.HandleFunc("/frontend.js", serveFile("frontend.js"))
+	http.HandleFunc("/frontend.js.map", serveFile("frontend.js.map"))
+
+	err := http.ListenAndServe("127.0.0.1:8080", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+	buildClient()
+	http.ServeFile(w, r, "index.html")
+}
+
+func serveFile(name string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, name)
+	}
+}
+
+var mu sync.Mutex
+
+func buildClient() {
+	mu.Lock()
+	defer mu.Unlock()
+
+	cmd := exec.Command("gopherjs", "build", "github.com/loov/wiki/frontend")
+	cmd.Env = append(os.Environ(), "GOOS=linux")
+	data, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Println(string(data))
+		log.Println(err)
+	}
 }

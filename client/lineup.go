@@ -8,8 +8,8 @@ import (
 
 // Context allows opening up a particular View
 type Context interface {
-	Open(title, slug string) View
-	CreateURL(slug string) string
+	Open(title, link string) View
+	CreateURL(link string) string
 }
 
 // View implements everything necessary to content
@@ -32,13 +32,13 @@ func NewLineup() *Lineup {
 	return lineup
 }
 
-func (lineup *Lineup) Open(host, title, slug string) {
+func (lineup *Lineup) Open(host, title, link string) {
 	server := lineup.Contexts[host]
 	if server == nil {
 		server = lineup.Contexts[""]
 	}
 
-	view := server.Open(title, slug)
+	view := server.Open(title, link)
 	stage := NewStage(lineup, view)
 	lineup.Add(stage)
 }
