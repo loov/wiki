@@ -63,7 +63,7 @@ func (view *View) Update() {
 
 	view.Stage.SetTag("loading", view.Status == Loading)
 	view.Stage.SetSlug(h.Text(view.URL))
-	view.Stage.SetButtons(h.Div("button", h.Text("Edit")))
+	// view.Stage.SetButtons(h.Div("button", h.Text("Edit")))
 
 	page := h.Div("page")
 	switch view.Status {
