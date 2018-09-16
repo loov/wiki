@@ -98,7 +98,7 @@ func (view *View) fetch() {
 
 	r := xhr.NewRequest("GET", view.URL)
 	// r.Timeout = 5000
-	r.ResponseType = xhr.JSON
+	r.ResponseType = xhr.Text // TODO: use json
 
 	err := r.Send(nil)
 	if err != nil {
