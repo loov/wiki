@@ -9,6 +9,8 @@ import (
 	"honnef.co/go/js/dom"
 	"honnef.co/go/js/xhr"
 
+	"github.com/microcosm-cc/bluemonday"
+
 	"github.com/loov/wiki/client"
 	"github.com/loov/wiki/h"
 )
@@ -160,8 +162,8 @@ func (view *View) Render(item Item) dom.Element {
 		el.SetTextContent(item.String("prompt"))
 	case "html":
 		el.Class().Add("html")
-		// TODO: add sanitization
-		el.SetInnerHTML(item.String("text"))
+		safehtml := string(bluemonday.UGCPolicy().SanitizeBytes([]byte(item.String("text"))))
+		el.SetInnerHTML(safehtml)
 	case "reference":
 		el.Class().Add("reference")
 		site := item.String("site")
