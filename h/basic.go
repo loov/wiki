@@ -48,6 +48,12 @@ func A(className string, href string, children ...dom.Node) dom.Element {
 	return el
 }
 
+func Img(className string, src string) dom.Element {
+	img := Tag("img", className)
+	img.SetAttribute("src", src)
+	return img
+}
+
 func Form(className string, children ...dom.Node) dom.Element {
 	return Tag("form", className, children...)
 }

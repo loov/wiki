@@ -71,6 +71,9 @@ func (view *View) Update() {
 	page := h.Div("page")
 	switch view.Status {
 	case Loading:
+		page.AppendChild(h.Fragment(
+			h.H1("story-header", h.Text(view.Title)),
+		))
 	case Errored:
 		page.AppendChild(h.Fragment(
 			h.H1("", h.Text("Error")),
@@ -125,6 +128,9 @@ func (view *View) fetch() {
 
 	view.Status = Loaded
 	view.Page = page
+	if page.Title != "" {
+		view.Title = page.Title
+	}
 }
 
 func (view *View) RenderAll(items ...Item) []dom.Node {
@@ -158,6 +164,7 @@ func (view *View) Render(item Item) dom.Element {
 				p.AppendChild(link)
 			},
 		}).Run(item.String("text"))
+
 	case "markdown":
 		el.Class().Add("markdown")
 
@@ -172,13 +179,16 @@ func (view *View) Render(item Item) dom.Element {
 			link.AddEventListener("click", false, view.LinkClicked)
 			link.AddEventListener("auxclick", false, view.LinkClicked)
 		}
+
 	case "factory":
 		el.Class().Add("factory")
 		el.SetTextContent(item.String("prompt"))
+
 	case "html":
 		el.Class().Add("html")
 		safehtml := string(bluemonday.UGCPolicy().SanitizeBytes([]byte(item.String("text"))))
 		el.SetInnerHTML(safehtml)
+
 	case "reference":
 		el.Class().Add("reference")
 		site := item.String("site")
@@ -192,7 +202,12 @@ func (view *View) Render(item Item) dom.Element {
 			h.Text(" - "),
 			h.Text(item.String("text")),
 		))
-	// case "image":
+
+	case "image":
+		el.Class().Add("image")
+		el.AppendChild(h.Img("thumbnail", item.String("url")))
+		el.AppendChild(h.P(item.String("text")))
+
 	default:
 		el.Class().Add("missing")
 		el.SetInnerHTML(fmt.Sprintf("%+v", item))

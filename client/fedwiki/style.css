@@ -26,3 +26,30 @@
 		rgba(0, 0, 0, 0.3) 20px
 	);
 }
+
+.page > .story > .data,
+.page > .story > .chart,
+.page > .story > .image {
+	float: right;
+	margin-left: 0.4em;
+	margin-bottom: 0.4em;
+	background: #eee;
+	padding: 0.8em;
+	width: 50%;
+}
+
+.page > .story > .image > .thumbnail {
+	width: 100%;
+}
+
+.page > .story > .report p,
+.page > .story > .factory p,
+.page > .story > .data p,
+.page > .story > .chart p,
+.page > .story > .footer a,
+.page > .story > .image p {
+    text-align: center;
+    margin-bottom: 0;
+    color: #666;
+    font-size: 70%;
+}
