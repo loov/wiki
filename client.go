@@ -1,3 +1,5 @@
+// +build js
+
 package main
 
 import (
@@ -15,6 +17,9 @@ func main() {
 	_ = html.Context{}
 
 	cl := client.New()
+	cl.Lineup.Contexts["jira"] = fedwiki.NewContext("/jira")
+	cl.Lineup.Open("jira", "Projects", "/projects")
+
 	cl.Lineup.Contexts["fed.wiki.org"] = fedwiki.NewContext("http://fed.wiki.org/")
 	cl.Lineup.Open("fed.wiki.org", "Welcome Visitors", "welcome-visitors")
 

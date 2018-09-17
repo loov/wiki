@@ -192,7 +192,8 @@ func (view *View) Render(item Item) dom.Element {
 	case "reference":
 		el.Class().Add("reference")
 		site := item.String("site")
-		link := h.A("", "http://"+site, h.Text(item.String("title")))
+		//TODO: fix reference and moving between sites
+		link := h.A("", site, h.Text(item.String("title")))
 		link.SetAttribute("data-site", site)
 		link.AddEventListener("click", false, view.ReferenceLinkClicked)
 		link.AddEventListener("auxclick", false, view.ReferenceLinkClicked)
@@ -241,8 +242,9 @@ func (view *View) ReferenceLinkClicked(ev dom.Event) {
 	ev.PreventDefault()
 
 	site := target.GetAttribute("data-site")
-	context := &Context{"http://" + site + "/"}
-	child := context.Open(target.TextContent(), "welcome-visitors")
+	//TODO: fix reference and moving between sites
+	// context := &Context{"http://" + site + "/"}
+	child := view.Context.Open(target.TextContent(), site)
 
 	view.Stage.Open(child, h.IsMiddleClick(ev))
 }
