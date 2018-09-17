@@ -15,8 +15,8 @@ func main() {
 	_ = html.Context{}
 
 	cl := client.New()
-	cl.Lineup.Contexts["fedwiki"] = fedwiki.NewContext("/data/")
-	cl.Lineup.Open("fedwiki", "Welcome", "welcome")
+	cl.Lineup.Contexts["fed.wiki.org"] = fedwiki.NewContext("http://fed.wiki.org/")
+	cl.Lineup.Open("fed.wiki.org", "Welcome Visitors", "welcome-visitors")
 
 	cl.Lineup.Contexts["data"] = mark.NewContext("/data/")
 	cl.Lineup.Open("data", "Welcome", "welcome.md")

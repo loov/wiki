@@ -10,6 +10,7 @@ import (
 	"honnef.co/go/js/xhr"
 
 	"github.com/microcosm-cc/bluemonday"
+	"gopkg.in/russross/blackfriday.v2"
 
 	"github.com/loov/wiki/client"
 	"github.com/loov/wiki/h"
@@ -157,6 +158,20 @@ func (view *View) Render(item Item) dom.Element {
 				p.AppendChild(link)
 			},
 		}).Run(item.String("text"))
+	case "markdown":
+		el.Class().Add("markdown")
+
+		// Render the markdown input into HTML using Blackfriday.
+		unsafehtml := blackfriday.Run([]byte(item.String("text")))
+		// Sanitize the HTML.
+		safehtml := string(bluemonday.UGCPolicy().SanitizeBytes(unsafehtml))
+
+		el.SetInnerHTML(safehtml)
+
+		for _, link := range el.GetElementsByTagName("a") {
+			link.AddEventListener("click", false, view.LinkClicked)
+			link.AddEventListener("auxclick", false, view.LinkClicked)
+		}
 	case "factory":
 		el.Class().Add("factory")
 		el.SetTextContent(item.String("prompt"))
@@ -177,6 +192,7 @@ func (view *View) Render(item Item) dom.Element {
 			h.Text(" - "),
 			h.Text(item.String("text")),
 		))
+	// case "image":
 	default:
 		el.Class().Add("missing")
 		el.SetInnerHTML(fmt.Sprintf("%+v", item))

@@ -114,7 +114,6 @@ func (view *View) fetch() {
 func (view *View) Render() dom.Node {
 	// Render the markdown input into HTML using Blackfriday.
 	unsafehtml := blackfriday.Run([]byte(view.Content))
-
 	// Sanitize the HTML.
 	safehtml := string(bluemonday.UGCPolicy().SanitizeBytes(unsafehtml))
 
