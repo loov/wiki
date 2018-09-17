@@ -1,3 +1,7 @@
+.page > .story-header {
+	border-bottom: 1px solid #eee;
+}
+
 .page > .story {
 	contain: paint;
 }

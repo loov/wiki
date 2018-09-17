@@ -19,8 +19,21 @@ html, body {
 	padding: 0;
 
 	line-height: 1.2;
-	color: #333333;
+	color: #222;
 	background: #f1f1f1;
+}
+
+html {
+	font-family: sans-serif;
+	line-height: 1.2;
+}
+
+h1 { font-size: 1.4em; }
+h2 { font-size: 1.2em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1.0em; }
+h1, h2, h3, h4{
+	color: #444;
 }
 
 html, body {

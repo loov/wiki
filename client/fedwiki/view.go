@@ -88,7 +88,7 @@ func (view *View) Update() {
 		))
 	case Loaded:
 		page.AppendChild(h.Fragment(
-			h.H1("", h.Text(view.Page.Title)),
+			h.H1("story-header", h.Text(view.Page.Title)),
 			h.Div("story", view.RenderAll(view.Page.Story...)...),
 		))
 	}
