@@ -10,6 +10,10 @@ type Page struct {
 	Story    []Item    `json:"story,omitempty"`
 }
 
+func (page *Page) Add(items ...Item) {
+	page.Story = append(page.Story, items...)
+}
+
 type Item map[string]interface{}
 
 // String returns a string value from key

@@ -42,6 +42,10 @@ func P(children ...string) dom.Element {
 	return el
 }
 
+func Pre(className string, text string) dom.Element {
+	return Tag("pre", className, Text(text))
+}
+
 func A(className string, href string, children ...dom.Node) dom.Element {
 	el := Tag("a", className, children...)
 	el.SetAttribute("href", href)

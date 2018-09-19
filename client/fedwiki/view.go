@@ -65,7 +65,7 @@ func (view *View) Update() {
 	}
 
 	view.Stage.SetTag("loading", view.Status == Loading)
-	view.Stage.SetSlug(h.Text(view.URL))
+	view.Stage.SetSlug(h.Text(strings.TrimSuffix(view.URL, ".json")))
 	// view.Stage.SetButtons(h.Div("button", h.Text("Edit")))
 
 	page := h.Div("page")
@@ -144,9 +144,9 @@ func (view *View) RenderAll(items ...Item) []dom.Node {
 func (view *View) Render(item Item) dom.Element {
 	el := h.Div("item")
 
+	el.Class().Add(item.Type())
 	switch item.Type() {
 	case "paragraph":
-		el.Class().Add("paragraph")
 		p := h.P()
 		(&Parser{
 			Begin: func() { p = h.P() },
@@ -165,9 +165,10 @@ func (view *View) Render(item Item) dom.Element {
 			},
 		}).Run(item.String("text"))
 
-	case "markdown":
-		el.Class().Add("markdown")
+	case "code":
+		el.AppendChild(h.Pre("", item.String("text")))
 
+	case "markdown":
 		// Render the markdown input into HTML using Blackfriday.
 		unsafehtml := blackfriday.Run([]byte(item.String("text")))
 		// Sanitize the HTML.
@@ -181,17 +182,20 @@ func (view *View) Render(item Item) dom.Element {
 		}
 
 	case "factory":
-		el.Class().Add("factory")
 		el.SetTextContent(item.String("prompt"))
 
 	case "html":
-		el.Class().Add("html")
 		safehtml := string(bluemonday.UGCPolicy().SanitizeBytes([]byte(item.String("text"))))
+		safehtml = item.String("text") // TODO: disable later
 		el.SetInnerHTML(safehtml)
 
 	case "reference":
-		el.Class().Add("reference")
 		site := item.String("site")
+
+		if thumb := item.String("thumbnail"); thumb != "" {
+			el.AppendChild(h.Img("thumbnail", thumb))
+		}
+
 		//TODO: fix reference and moving between sites
 		link := h.A("", site, h.Text(item.String("title")))
 		link.SetAttribute("data-site", site)
@@ -205,7 +209,6 @@ func (view *View) Render(item Item) dom.Element {
 		))
 
 	case "image":
-		el.Class().Add("image")
 		el.AppendChild(h.Img("thumbnail", item.String("url")))
 		el.AppendChild(h.P(item.String("text")))
 

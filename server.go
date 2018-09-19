@@ -17,7 +17,7 @@ func main() {
 	http.Handle("/proxy", proxy.New())
 
 	// TODO: use proper test jira instance
-	jira, err := jira.New("/jira", "https://issues.apache.org/jira/")
+	jira, err := jira.NewBasicAuth("/jira", "http://localhost:2990/jira/", "admin", "admin")
 	if err != nil {
 		log.Println(err)
 	} else {
