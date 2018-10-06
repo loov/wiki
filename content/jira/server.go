@@ -180,8 +180,8 @@ func (server *Server) Issue(w http.ResponseWriter, r *http.Request) {
 
 	page.Add(Item{
 		"id":   "Description",
-		"type": "paragraph",
-		"text": issue.Fields.Description,
+		"type": "html",
+		"text": ToHTML(issue.Fields.Description),
 	})
 
 	if issue.Fields.Comments != nil && len(issue.Fields.Comments.Comments) > 0 {
@@ -189,8 +189,8 @@ func (server *Server) Issue(w http.ResponseWriter, r *http.Request) {
 		for _, comment := range issue.Fields.Comments.Comments {
 			page.Add(Item{
 				"id":   "Attachment-" + comment.ID,
-				"type": "paragraph",
-				"text": comment.Body,
+				"type": "html",
+				"text": ToHTML(comment.Body),
 			})
 		}
 	}
