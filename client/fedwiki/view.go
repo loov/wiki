@@ -64,6 +64,9 @@ func (view *View) Update() {
 		return
 	}
 
+	if view.Page != nil && view.Page.Class != "" {
+		view.Stage.SetTag(view.Page.Class, true)
+	}
 	view.Stage.SetTag("loading", view.Status == Loading)
 	view.Stage.SetSlug(h.Text(strings.TrimSuffix(view.URL, ".json")))
 	// view.Stage.SetButtons(h.Div("button", h.Text("Edit")))

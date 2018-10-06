@@ -5,6 +5,7 @@ import "time"
 type Page struct {
 	Version  int       `json:"version"`
 	Title    string    `json:"title"`
+	Class    string    `json:"class"`
 	Synopsis string    `json:"synopsis,omitempty"`
 	Modified time.Time `json:"modified,omitempty"`
 	Story    []Item    `json:"story,omitempty"`

@@ -119,6 +119,10 @@ body {
 	border-radius: 2px;
 }
 
+.stage.wide {
+	width: 46rem;
+}
+
 .stage > .indicator {
 	position: relative;
 	height: var(--indicator-height);

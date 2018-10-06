@@ -171,6 +171,7 @@ func (server *Server) Issue(w http.ResponseWriter, r *http.Request) {
 	page := Page{
 		Version:  0,
 		Title:    issue.Fields.Summary,
+		Class:    "wide",
 		Modified: time.Now(),
 	}
 
