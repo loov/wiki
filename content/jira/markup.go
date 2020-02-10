@@ -6,8 +6,11 @@ import (
 )
 
 var (
+	// See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa
+
 	// headings
 	rxCaption = regexp.MustCompile(`(?m)^\s*(h[1-6])\.\s*(.*)\s*$`)
+
 	// text effects
 	rxBold        = regexp.MustCompile(`([^\s])\*([^\n\*]+)\*`)
 	rxEmphasis    = regexp.MustCompile(`([^\s])\_([^\n\_]+)\_`)
@@ -20,12 +23,14 @@ var (
 	rxBlockquote  = regexp.MustCompile(`(?m)^bq\.\s*(.*)\s*$`)
 	rxQuote       = regexp.MustCompile(`(?ms)\{quote\}\s*(.*?)\s*\{quote\}`)
 	rxColor       = regexp.MustCompile(`(?ms)\{color:([^}]*)\}\s*(.*?)\s*\{color\}`)
+
 	// text breaks
 	rxParagraph       = regexp.MustCompile(`\n\n+`)
 	rxLinebreak       = regexp.MustCompile(`\\\\`)
 	rxHorizontalRuler = regexp.MustCompile(`----`)
 	rxEmDash          = regexp.MustCompile(`---`)
 	rxEnDash          = regexp.MustCompile(`--`)
+
 	// Links
 	// Lists
 	// Images
