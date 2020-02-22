@@ -1,0 +1,67 @@
+.page > .story-header {
+	border-bottom: 1px solid #eee;
+}
+
+.page > .story {
+	contain: paint;
+}
+
+.page > .story > .missing {
+	padding: 0.8em;
+	background: repeating-linear-gradient(
+		45deg,
+		rgba(0, 0, 0, 0.2),
+		rgba(0, 0, 0, 0.2) 10px,
+		rgba(0, 0, 0, 0.3) 10px,
+		rgba(0, 0, 0, 0.3) 20px
+	);
+}
+
+.page > .story > .code > pre {
+	padding: 0.4em;
+    background: #eee;
+    white-space: pre-wrap;
+}
+
+.page > .story > .factory {
+	border: 1px dotted #ccc;
+	background: #eee;
+
+	font-size: 0.8em;
+	padding: 1em;
+
+	text-align: center;
+}
+
+.page > .story > .reference > .thumbnail {
+	float: right;
+	max-width: 2em;
+	max-height: 2em;
+}
+
+.page > .story > .data,
+.page > .story > .chart,
+.page > .story > .image {
+	float: right;
+	margin-left: 0.4em;
+	margin-bottom: 0.4em;
+	background: #eee;
+	padding: 0.8em;
+	width: 50%;
+}
+
+.page > .story > .image > .thumbnail {
+	width: 100%;
+}
+
+.page > .story > .report p,
+.page > .story > .factory p,
+.page > .story > .data p,
+.page > .story > .chart p,
+.page > .story > .footer a,
+.page > .story > .image p {
+    text-align: center;
+    margin-bottom: 0;
+    color: #666;
+    font-size: 70%;
+}

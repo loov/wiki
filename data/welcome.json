@@ -1,0 +1,12 @@
+{
+	"title": "Welcome",
+	"story": [{
+		"id": "123123123123",
+		"type": "paragraph",
+		"text": "Welcome to this [[information navigation]]. Please see [[Introduction]]."
+	}, {
+		"id": "53185913845fajk",
+		"type": "paragraph",
+		"text": "[[Error]] page."
+	}]
+}

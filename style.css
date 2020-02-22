@@ -1,0 +1,202 @@
+:root {
+	--header-height: 2rem;
+	--tool-height: 1.2rem;
+	--indicator-height: 4px;
+	--main-margin: 0.5rem;
+	--main-padding: 0.5rem;
+
+	--selection-color: #9dd464;
+	
+	--animation-speed: 0.15s;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+
+	line-height: 1.2;
+	color: #222;
+	background: #f1f1f1;
+}
+
+html {
+	font-family: sans-serif;
+	line-height: 1.2;
+}
+
+h1 { font-size: 1.4em; }
+h2 { font-size: 1.2em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1.0em; }
+h1, h2, h3, h4{
+	color: #444;
+}
+
+span.outline {
+	text-shadow: 0 0 1px #000;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	overflow-scrolling: touch;
+	-webkit-overflow-scrolling: touch;
+}
+
+.wiki {
+	display: block;
+	position: fixed;
+	top: 0; left: 0; right: 0; bottom: 0;
+}
+
+.app.hide-search {
+	--header-height: 0;
+}
+.app.hide-search .header {
+	display: none !important;
+}
+.header {
+	position: absolute;
+	display: block;
+	contain: strict;
+	top: 0; left: 0; right: 0;
+	
+	height: var(--header-height);
+	line-height: var(--header-height);
+	padding: 0 var(--main-padding);
+
+	background: #eee;
+	border-bottom: 1px solid #ccc;
+}
+
+.search {
+	
+}
+
+.search-input {
+	width: 30em;
+}
+
+.search > button {
+	font-variant: small-caps;
+}
+
+.lineup {
+	position: absolute;
+	display: flex;
+	flex-flow: row;
+	flex-wrap: nowrap;
+	contain: strict;
+
+	top: var(--header-height);
+	left: 0; right: 0; bottom: 0;
+
+	overflow-x: scroll;
+	overflow-y: hidden;
+
+	background: #f1f1f1;
+}
+
+.stage {
+	position: relative;
+	flex: 0 0 auto;
+	display: block;
+
+	padding: calc(0.5 * var(--main-padding));
+	margin: calc(0.5 * var(--main-padding));
+	padding-top: 2px;
+
+	width: 28rem;
+	max-width: 100%;
+	height: calc(100% - var(--main-padding));
+
+	background: #fff;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+	border-radius: 2px;
+}
+
+.stage.wide {
+	width: 46rem;
+}
+
+.stage > .indicator {
+	position: relative;
+	height: var(--indicator-height);
+	border-radius: 3px;
+	margin-bottom: 2px;
+	transition: background 0.4s ease-in-out;
+	background: transparent;
+}
+.stage.selected > .indicator {
+	overflow: hidden;
+	background: var(--selection-color);
+}
+.stage.loading > .indicator {
+	background: #e49300;
+}
+
+.stage > .status {
+	display: flex;
+	height: var(--tool-height);
+	line-height: var(--tool-height);
+	font-size: calc(0.6 * var(--tool-height));
+}
+
+.status > .slug {
+	flex: 1;
+	color: #333;
+}
+
+.status > .buttons > .button {
+	display: block;
+	height: var(--tool-height);
+	
+	margin: 0 6px;
+	padding: 0 6px;
+
+	text-align: center;
+
+	background: #fff;
+	transition: background var(--animation-speed) ease-in-out;
+	
+	border: 1px solid #ddd;
+	border-bottom: 0;
+
+	border-radius: 2px 2px 0 0;
+	cursor: pointer;
+}
+.status > .buttons > .button:first-child { margin-left: 0;  }
+.status > .buttons > .button:last-child  { margin-right: 0; }
+
+.status > .buttons > .button:hover {
+	background: #eee;
+}
+
+.content {
+	border-top: 1px solid #ddd;
+	padding: var(--main-padding);
+	height: calc(100% - var(--tool-height) - var(--indicator-height));
+
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.overflow-bottom {
+	background: linear-gradient(0deg, #ccc, transparent 10px);
+}
+.overflow-top {
+	background: linear-gradient(180deg, #ccc, transparent 10px);
+}
+.overflow-bottom.overflow-top {
+	background:
+		linear-gradient(0deg, #ccc, transparent 10px),	
+		linear-gradient(180deg, #ccc, transparent 10px);
+}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Wiki</title>
+	<link rel="stylesheet" type="text/css" href="/style.css">
+	<link rel="stylesheet" type="text/css" href="/fedwiki.css">
+
+	<script type="text/javascript" src="/h.js"></script>
+	<script type="text/javascript" src="/wiki.js"></script>
+	<script type="text/javascript" src="/html.js"></script>
+
+	<script type="text/javascript" src="https://unpkg.com/md@0.6.0/dist/md.min.js"></script>
+	<script type="text/javascript" src="/markdown.js"></script>
+</head>
+<body>
+</body>
+<script>
+	const client = new wiki.Client();
+
+	client.lineup.contexts["data"] = new markdown.Context("/data/")
+	client.lineup.open("data", "Welcome", "welcome.md");
+
+	document.body.appendChild(client.node);
+</script>
+</html>
