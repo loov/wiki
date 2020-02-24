@@ -5,11 +5,12 @@
 	<link rel="stylesheet" type="text/css" href="/style.css">
 	<link rel="stylesheet" type="text/css" href="/fedwiki.css">
 
+	<script type="text/javascript" src="https://unpkg.com/md@0.6.0/dist/md.min.js"></script>
+
 	<script type="text/javascript" src="/h.js"></script>
 	<script type="text/javascript" src="/wiki.js"></script>
 	<script type="text/javascript" src="/html.js"></script>
-
-	<script type="text/javascript" src="https://unpkg.com/md@0.6.0/dist/md.min.js"></script>
+	<script type="text/javascript" src="/fedwiki.js"></script>
 	<script type="text/javascript" src="/markdown.js"></script>
 </head>
 <body>
@@ -19,6 +20,9 @@
 
 	client.lineup.contexts["data"] = new markdown.Context("/data/")
 	client.lineup.open("data", "Welcome", "welcome.md");
+
+	client.lineup.contexts["fed.wiki.org"] = new fedwiki.Context("http://fed.wiki.org/")
+	client.lineup.open("fed.wiki.org", "Welcome Visitors", "welcome-visitors");
 
 	document.body.appendChild(client.node);
 </script>
