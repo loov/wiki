@@ -230,7 +230,9 @@ const fedwiki = (function () {
                     break;
                 case "html":
                     // TODO: sanitize
-                    el.innerHTML = item.text;
+                    let p2 = h.p();
+                    p2.innerHTML = item.text;
+                    el.appendChild(p2);
                     break;
                 default:
                     el.classList.add("missing");
