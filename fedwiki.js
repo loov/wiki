@@ -233,20 +233,33 @@ const fedwiki = (function () {
         return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
     }
 
+    function escapeHTML(s) {
+        return s.replace(/&/g, "&amp;").
+            replace(/</g, "&lt;").
+            replace(/>/g, "&gt;")
+    }
+
     let render = {
         paragraph(view, el, item) {
-            let text = item.text.replace(/\[\[([^\]]+)\]\]/gi, (match, name) => {
-                let slug = slugify(name);
-                let href = view.context.host + slug + ".html";
-                return '<a title="view" href="' + href + '" data-slug="' + slug + '" >' + name + '</a>';
-            });
+            var frag = h.fragment();
+            item.text.split(/\n\n+/).forEach((para) => {
+                para = escapeHTML(para);
 
-            // TODO: this is unsafe.
-            let p = h.p();
-            p.innerHTML = text;
-            view.listenClicks(p);
+                let text = para.replace(/\[\[([^\]]+)\]\]/gi, (match, name) => {
+                    let slug = slugify(name);
+                    let href = view.context.host + slug + ".html";
+                    return '<a title="view" href="' + href + '" data-slug="' + slug + '" >' + name + '</a>';
+                });
 
-            el.appendChild(p);
+                // TODO: support other links
+
+                let p = h.p();
+                p.innerHTML = text;
+                view.listenClicks(p);
+                frag.appendChild(p);
+            })
+
+            el.appendChild(frag);
         },
         markdown(view, el, item) {
             // TODO: sanitize html
