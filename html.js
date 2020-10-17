@@ -127,15 +127,23 @@ const html = (function () {
             // TODO: sanitize html
             let mark = h.div("markdown");
             mark.innerHTML = this.content;
-
-            let links = mark.getElementsByTagName("a");
-            for (let i = 0; i < links.length; i++) {
-                let link = links[i];
-                link.addEventListener("click", this.linkClicked);
-                link.addEventListener("auxclick", this.linkClicked);
-            };
+            this.listenClicks(mark);
 
             return mark;
+        }
+
+        listenClicks(el) {
+            let view = this;
+            let links = el.getElementsByTagName("a");
+            for (let i = 0; i < links.length; i++) {
+                let link = links[i];
+                link.addEventListener("click", event => {
+                    view.linkClicked(event);
+                });
+                link.addEventListener("auxclick", event => {
+                    view.linkClicked(event);
+                });
+            };
         }
 
         linkClicked(ev) {

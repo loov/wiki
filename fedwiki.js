@@ -19,6 +19,12 @@ const fedwiki = (function () {
 
     class Context {
         constructor(host) {
+            if (!host.startsWith("http://") && !host.startsWith("https://")) {
+                host = "http://" + host;
+            }
+            if (!host.endsWith("/")) {
+                host += "/"
+            }
             this.host = host;
         }
 
@@ -26,7 +32,7 @@ const fedwiki = (function () {
             return this.host + slug + ".json";
         }
 
-        open(title, slug) {
+        open(title, slug, optionalForkedFrom) {
             let context = this;
             let url = slug;
             if (slug.startsWith("http://") || slug.startsWith("https://")) {
@@ -35,14 +41,16 @@ const fedwiki = (function () {
                 url = this.createURL(slug);
             }
 
-            return new View(context, title, url);
+            return new View(context, title, slug, url, optionalForkedFrom);
         }
     }
 
     class View {
-        constructor(context, title, url) {
+        constructor(context, title, slug, url, optionalForkedFrom) {
             this.context = context;
+            this.slug = slug;
             this.url = url;
+            this.forkedFrom = optionalForkedFrom;
 
             this.title = title;
             this.status = Loading;
@@ -62,12 +70,31 @@ const fedwiki = (function () {
             // TODO: cancel pending requests
         }
 
+        unfork() {
+            let view = this;
+            if (!view.forkedFrom) {
+                return false;
+            }
+
+            let forkContext = new Context(view.forkedFrom);
+            view.context = forkContext;
+            view.forkedFrom = null;
+            view.url = forkContext.createURL(view.slug);
+            view.update();
+            view.fetch();
+            return true;
+        }
+
         fetch() {
             let view = this;
             fetch(view.url, {
                 method: "GET"
             }).then(response => {
                 if (response.status == 404) {
+                    if (view.unfork()) {
+                        return;
+                    }
+
                     view.status = Missing;
                     view.error = "Page missing";
                     return;
@@ -81,6 +108,13 @@ const fedwiki = (function () {
                 view.status = Loaded;
                 return response.json().then(content => {
                     view.page = content;
+                    if (view.page.journal) {
+                        view.page.journal.forEach((op) => {
+                            if (op.type === "fork") {
+                                view.forkedFrom = op.site;
+                            }
+                        });
+                    }
                 }).catch(error => {
                     view.status = Errored;
                     view.error = error;
@@ -129,9 +163,12 @@ const fedwiki = (function () {
                     ));
                     break;
                 case Loaded:
+                    let view = this;
                     page.appendChild(h.fragment(
                         h.h1("story-header", h.text(this.page.title)),
-                        h.div("story", ...this.page.story.map(this.renderItem))
+                        h.div("story", ...this.page.story.map((item) => {
+                            return view.renderItem(item);
+                        }))
                     ));
                     break;
                 default:
@@ -145,25 +182,6 @@ const fedwiki = (function () {
             this.stage.setContent(page);
         }
 
-        render() {
-            let view = this;
-            let mark = h.div("markdown");
-            mark.innerHTML = md(this.content, options);
-
-            let links = mark.getElementsByTagName("a");
-            for (let i = 0; i < links.length; i++) {
-                let link = links[i];
-                link.addEventListener("click", event => {
-                    view.linkClicked(event);
-                });
-                link.addEventListener("auxclick", event => {
-                    view.linkClicked(event);
-                });
-            };
-
-            return mark;
-        }
-
         renderItem(item) {
             function slugify(name) {
                 return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
@@ -173,11 +191,28 @@ const fedwiki = (function () {
             el.classList.add(item.type);
             switch (item.type) {
                 case "paragraph":
+                    let view = this;
                     let text = item.text.replace(/\[\[([^\]]+)\]\]/gi, (match, name) => {
-                        return "<<" + slugify(name) + ">>";
+                        let slug = slugify(name);
+                        let href = view.context.host + slug + ".html";
+                        return '<a title="view" href="' + href + '" data-slug="' + slug + '" >' + name + '</a>';
                     });
-                    el.appendChild(h.p(text));
+
+                    // TODO: this is unsafe.
+                    let p = h.p();
+                    p.innerHTML = text;
+                    this.listenClicks(p);
+
+                    el.appendChild(p);
                     break;
+                case "markdown":
+                    // TODO: sanitize html
+                    let mark = h.div("markdown");
+                    mark.innerHTML = md(item.text, options);
+                    this.listenClicks(mark);
+                    el.appendChild(mark);
+                    break;
+
                 case "code":
                     el.appendChild(h.pre("", item.text));
                     break;
@@ -195,6 +230,20 @@ const fedwiki = (function () {
             return el;
         }
 
+        listenClicks(el) {
+            let view = this;
+            let links = el.getElementsByTagName("a");
+            for (let i = 0; i < links.length; i++) {
+                let link = links[i];
+                link.addEventListener("click", event => {
+                    view.linkClicked(event);
+                });
+                link.addEventListener("auxclick", event => {
+                    view.linkClicked(event);
+                });
+            };
+        }
+
         linkClicked(ev) {
             if (this.stage == null) return;
 
@@ -208,7 +257,7 @@ const fedwiki = (function () {
                 slug = url;
             }
 
-            let child = this.context.open(target.textContent, slug);
+            let child = this.context.open(target.textContent, slug, this.forkedFrom);
             this.stage.open(child, h.isMiddleClick(ev));
         }
     }
