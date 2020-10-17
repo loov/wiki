@@ -199,7 +199,12 @@ const fedwiki = (function () {
 
         listenClicks(el) {
             let view = this;
-            let links = el.getElementsByTagName("a");
+            var links = [];
+            if (el.tagName == "A") {
+                links = [el];
+            } else {
+                links = el.getElementsByTagName("a");
+            }
             for (let i = 0; i < links.length; i++) {
                 let link = links[i];
                 link.addEventListener("click", event => {
@@ -219,12 +224,18 @@ const fedwiki = (function () {
             ev.preventDefault();
 
             let slug = target.getAttribute("data-slug");
+            let site = target.getAttribute("data-site");
             let url = target.getAttribute("href");
             if (slug == null) {
                 slug = url;
             }
 
-            let child = this.context.open(target.textContent, slug, this.forkedFrom);
+            var context = this.context;
+            if (site) {
+                context = new Context(site);
+            }
+
+            let child = context.open(target.textContent, slug, this.forkedFrom);
             this.stage.open(child, h.isMiddleClick(ev));
         }
     }
@@ -292,6 +303,19 @@ const fedwiki = (function () {
         },
         pagefold(view, el, item) {
             el.appendChild(h.div("", h.text(item.text)));
+        },
+        reference(view, el, item) {
+            var a = h.tag("a", "", h.text(item.title));
+            a.href = "http://" + item.site + "/" + item.slug + ".html";
+            a.setAttribute("data-slug", item.slug);
+            a.setAttribute("data-site", item.site);
+            view.listenClicks(a);
+
+            el.appendChild(h.tag("p", "",
+                a,
+                h.text(" - "),
+                h.text(item.text)
+            ));
         }
     };
 
