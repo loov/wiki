@@ -212,7 +212,16 @@ const fedwiki = (function () {
                     this.listenClicks(mark);
                     el.appendChild(mark);
                     break;
+                case "image":
+                    let img = h.tag("img", "thumbnail");
+                    img.src = item.url;
+                    img.title = item.caption;
 
+                    el.appendChild(h.fragment(
+                        img,
+                        h.p(item.text)
+                    ));
+                    break;
                 case "code":
                     el.appendChild(h.pre("", item.text));
                     break;
