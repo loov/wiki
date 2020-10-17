@@ -24,7 +24,7 @@ class h {
         return el;
     }
     static pre(classNames, text) {
-        return h.tag("div", classNames, h.text(text));
+        return h.tag("pre", classNames, h.text(text));
     }
     static div(classNames, ...children) {
         return h.tag("div", classNames, ...children);
