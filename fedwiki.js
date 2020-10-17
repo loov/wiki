@@ -183,61 +183,17 @@ const fedwiki = (function () {
         }
 
         renderItem(item) {
-            function slugify(name) {
-                return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
-            }
-
             let el = h.div("item");
             el.classList.add(item.type);
-            switch (item.type) {
-                case "paragraph":
-                    let view = this;
-                    let text = item.text.replace(/\[\[([^\]]+)\]\]/gi, (match, name) => {
-                        let slug = slugify(name);
-                        let href = view.context.host + slug + ".html";
-                        return '<a title="view" href="' + href + '" data-slug="' + slug + '" >' + name + '</a>';
-                    });
 
-                    // TODO: this is unsafe.
-                    let p = h.p();
-                    p.innerHTML = text;
-                    this.listenClicks(p);
-
-                    el.appendChild(p);
-                    break;
-                case "markdown":
-                    // TODO: sanitize html
-                    let mark = h.div("markdown");
-                    mark.innerHTML = md(item.text, options);
-                    this.listenClicks(mark);
-                    el.appendChild(mark);
-                    break;
-                case "image":
-                    let img = h.tag("img", "thumbnail");
-                    img.src = item.url;
-                    img.title = item.caption;
-
-                    el.appendChild(h.fragment(
-                        img,
-                        h.p(item.text)
-                    ));
-                    break;
-                case "code":
-                    el.appendChild(h.pre("", item.text));
-                    break;
-                case "factory":
-                    el.textContent = item.text;
-                    break;
-                case "html":
-                    // TODO: sanitize
-                    let p2 = h.p();
-                    p2.innerHTML = item.text;
-                    el.appendChild(p2);
-                    break;
-                default:
-                    el.classList.add("missing");
-                    el.innerText = JSON.stringify(item);
+            var r = render[item.type];
+            if (r) {
+                r(this, el, item);
+            } else {
+                el.classList.add("missing");
+                el.innerText = JSON.stringify(item);
             }
+
             return el;
         }
 
@@ -272,6 +228,56 @@ const fedwiki = (function () {
             this.stage.open(child, h.isMiddleClick(ev));
         }
     }
+
+    function slugify(name) {
+        return name.replace(/\s/g, '-').replace(/[^A-Za-z0-9-]/g, '').toLowerCase();
+    }
+
+    let render = {
+        paragraph(view, el, item) {
+            let text = item.text.replace(/\[\[([^\]]+)\]\]/gi, (match, name) => {
+                let slug = slugify(name);
+                let href = view.context.host + slug + ".html";
+                return '<a title="view" href="' + href + '" data-slug="' + slug + '" >' + name + '</a>';
+            });
+
+            // TODO: this is unsafe.
+            let p = h.p();
+            p.innerHTML = text;
+            view.listenClicks(p);
+
+            el.appendChild(p);
+        },
+        markdown(view, el, item) {
+            // TODO: sanitize html
+            let mark = h.div("markdown");
+            mark.innerHTML = md(item.text, options);
+            view.listenClicks(mark);
+            el.appendChild(mark);
+        },
+        image(view, el, item) {
+            let img = h.tag("img", "thumbnail");
+            img.src = item.url;
+            img.title = item.caption;
+
+            el.appendChild(h.fragment(
+                img,
+                h.p(item.text)
+            ));
+        },
+        code(view, el, item) {
+            el.appendChild(h.pre("", item.text));
+        },
+        factory(view, el, item) {
+            el.textContent = item.text;
+        },
+        html(view, el, item) {
+            // TODO: sanitize
+            let p = h.p();
+            p.innerHTML = item.text;
+            el.appendChild(p);
+        }
+    };
 
     return {
         Context: Context,
