@@ -65,3 +65,16 @@
     color: #666;
     font-size: 70%;
 }
+
+.page > .story > .pagefold > div {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+.page > .story > .pagefold > div::before, .page > .story > .pagefold > div::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #666;
+}
+.page > .story > .pagefold > div::before { margin-right: .25em; }
+.page > .story > .pagefold > div::after { margin-left: .25em; }

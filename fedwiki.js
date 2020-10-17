@@ -289,6 +289,9 @@ const fedwiki = (function () {
             let p = h.p();
             p.innerHTML = item.text;
             el.appendChild(p);
+        },
+        pagefold(view, el, item) {
+            el.appendChild(h.div("", h.text(item.text)));
         }
     };
 
